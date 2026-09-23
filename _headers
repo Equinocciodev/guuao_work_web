@@ -1,0 +1,12 @@
+# REFERENCIA, no configuración: GitHub Pages NO sirve cabeceras propias y
+# este archivo no se publica (publicar.yml lo excluye). La CSP real va en un
+# <meta> de cada página, que es lo único que Pages respeta; lo de abajo es lo
+# que se pondría si el sitio se muda a un servidor que sí las aplique
+# (Cloudflare Pages, Netlify). `frame-ancestors` y `X-Frame-Options` solo
+# funcionan como cabecera, por eso no están en el <meta>.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-/b8tLwtLEebYdFwXHSokyqVvhibOvCcncQIsgqf0Yw4='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'

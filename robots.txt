@@ -1,0 +1,8 @@
+# GUUAO® Work — https://work.guuao.com
+# Sitio público de la app interna del equipo de tienda. Se indexa entero:
+# ninguna página tiene datos de nadie. La 404 no es una página.
+User-agent: *
+Allow: /
+Disallow: /404.html
+
+Sitemap: https://work.guuao.com/sitemap.xml

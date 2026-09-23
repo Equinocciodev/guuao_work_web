@@ -1,0 +1,81 @@
+# Publicación del sitio de GUUAO® Work en GitHub Pages (work.guuao.com).
+#
+# Dos trabajos y en este orden: primero se verifica, y solo si pasa se
+# publica. Un enlace roto o una página que no cierra sus etiquetas no llega a
+# producción — y aquí vive la política de privacidad que Google Play enlaza.
+#
+# No hace falta ningún secreto: Pages se despliega con el token del propio
+# workflow (`pages: write` + `id-token: write`). Lo único que hay que hacer
+# una vez en el repositorio es Settings › Pages › Source: «GitHub Actions», y
+# cargar `work.guuao.com` en «Custom domain». Está en el README.
+
+name: Publicar
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Una publicación a la vez, y la que está en curso NO se cancela: un
+# `deploy-pages` a medio camino deja el sitio en un estado que GitHub no
+# promete.
+concurrency:
+  group: publicar-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verificar:
+    name: Verificar el sitio
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # HTML bien formado, metadatos, hash de la CSP, enlaces y anclas, cero
+      # recursos externos, cabecera y pie idénticos, sitemap. Solo Python.
+      - name: Chequeo del HTML y de los enlaces
+        run: python3 tool/verificar.py
+
+      # Se sube una carpeta armada a mano y no el repositorio entero: así
+      # `tool/`, `.github/`, `_headers` y el README no terminan servidos.
+      - name: Armar la carpeta que se publica
+        run: |
+          mkdir -p _sitio
+          cp -R assets _sitio/
+          cp *.html robots.txt sitemap.xml favicon.svg site.webmanifest CNAME _sitio/
+          # Sin Jekyll: Pages lo correría por defecto y se comería lo que
+          # empiece con guion bajo.
+          touch _sitio/.nojekyll
+          find _sitio -name 'README.md' -delete
+          for f in _headers tool .github README.md; do
+            if [ -e "_sitio/$f" ]; then echo "$f no va en el sitio"; exit 1; fi
+          done
+          # Y lo que SÍ tiene que haber llegado: la política es la URL que
+          # está cargada en Play y dentro de la app.
+          for f in index.html privacidad.html soporte.html terminos.html 404.html CNAME; do
+            if [ ! -f "_sitio/$f" ]; then echo "$f no llegó a _sitio"; exit 1; fi
+          done
+          ls -laR _sitio | head -60
+
+      - name: Subir el artefacto de Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _sitio
+
+  publicar:
+    name: Publicar en GitHub Pages
+    needs: verificar
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Desplegar
+        id: deploy
+        uses: actions/deploy-pages@v4
