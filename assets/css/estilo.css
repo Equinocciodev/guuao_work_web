@@ -31,6 +31,13 @@
   --acento: #00CED1;
   --acento-tinta: #090909;    /* el texto SOBRE un relleno turquesa */
   --acento-velo: rgba(0, 206, 209, .10);
+  --exito: #3DDC84;           /* ESTADO: a tiempo / listo / hecho. Nunca cromo */
+  --exito-velo: rgba(61, 220, 132, .12);
+  --velo: #141417;            /* el fondo de las secciones alternas */
+  --sombra: 0 18px 44px rgba(0, 0, 0, .5);
+  --telefono: #1B1B1E;        /* el cuerpo del teléfono de los marcos */
+  --telefono-borde: #34343A;
+  --telefono-camara: #050506;
   --radio: 16px;
   --radio-boton: 14px;
   --ancho: 1080px;
@@ -49,6 +56,13 @@
   --acento: #0C7F84;
   --acento-tinta: #FFFFFF;
   --acento-velo: rgba(12, 127, 132, .08);
+  --exito: #15803D;           /* el verde vivo da 2,3:1 sobre blanco: este, 5:1 */
+  --exito-velo: rgba(34, 197, 94, .12);
+  --velo: #EDEFF2;
+  --sombra: 0 18px 44px rgba(20, 20, 30, .16);
+  --telefono: #1B1B1E;
+  --telefono-borde: #C9CCD2;
+  --telefono-camara: #050506;
 }
 
 @media (prefers-color-scheme: light) {
@@ -63,6 +77,13 @@
     --acento: #0C7F84;
     --acento-tinta: #FFFFFF;
     --acento-velo: rgba(12, 127, 132, .08);
+    --exito: #15803D;
+    --exito-velo: rgba(34, 197, 94, .12);
+    --velo: #EDEFF2;
+    --sombra: 0 18px 44px rgba(20, 20, 30, .16);
+    --telefono: #1B1B1E;
+    --telefono-borde: #C9CCD2;
+    --telefono-camara: #050506;
   }
 }
 
@@ -127,10 +148,10 @@ p { margin: 0 0 1em; }
 .marca svg { height: 22px; width: auto; }
 .marca__recuadro { stroke: var(--acento); }
 
-.nav { display: flex; flex-wrap: wrap; gap: 4px; }
+.nav { display: flex; gap: 2px; }
 .nav a {
-  color: var(--texto-2); text-decoration: none; font-weight: 600; font-size: .92rem;
-  padding: 10px 12px; border-radius: 10px;
+  color: var(--texto-2); text-decoration: none; font-weight: 600; font-size: .9rem;
+  padding: 10px 9px; border-radius: 10px; white-space: nowrap;
 }
 .nav a:hover { color: var(--texto); background: var(--superficie-2); }
 .nav a[aria-current="page"] { color: var(--texto); box-shadow: inset 0 -2px 0 var(--acento); border-radius: 10px 10px 0 0; }
@@ -152,20 +173,96 @@ p { margin: 0 0 1em; }
   :root:not([data-tema="oscuro"]) .tema__luna { display: none; }
 }
 
-/* En el teléfono los cuatro destinos bajan a una segunda fila completa, sin
-   desplazamiento lateral: cuatro enlaces caben a 320 px y un menú plegable
-   sería más código que el problema que resuelve. */
-@media (max-width: 720px) {
-  .cabecera__fila { flex-wrap: wrap; padding-top: 6px; }
-  .nav { order: 3; width: 100%; justify-content: space-between; gap: 0; padding-bottom: 4px; }
-  .nav a { padding: 10px 8px; font-size: .86rem; }
-  :root { --cabecera: 108px; }
+/* EL CAMINO A GOOGLE PLAY (23-sep-2026), copiado de vendoo_web.
+   En escritorio, el badge OFICIAL a 40 px (el mínimo que pide Apple y que
+   vendoo tomó como regla; Google pide 28). En pantalla angosta el badge no
+   entra junto a la marca y el menú, y en su lugar sale `.descarga-corta`: NO
+   es un badge —texto y un ícono nuestro—, así que no le aplica la guía de
+   marca, y lleva a `/#descargar`, donde están el badge a 48 px y la nota de
+   que la cuenta la da el encargado. */
+.tienda { display: inline-flex; flex: none; line-height: 0; border-radius: 8px; }
+.tienda img { display: block; height: 48px; width: auto; max-width: none; }
+.tienda--cabecera img { height: 40px; }
+
+.descarga-corta {
+  display: none; align-items: center; gap: 8px; flex: none;
+  min-height: 40px; padding: 0 14px;
+  border: 1px solid var(--borde); border-radius: 12px;
+  color: var(--texto); background: var(--superficie);
+  font-size: .88rem; font-weight: 600; text-decoration: none;
 }
-/* A 320 px los cuatro caben en un renglón solo si se aprietan: medido,
-   «Privacidad» saltaba a una tercera fila. */
-@media (max-width: 380px) {
-  .nav { flex-wrap: nowrap; }
-  .nav a { padding: 10px 4px; font-size: .8rem; white-space: nowrap; }
+.descarga-corta:hover { border-color: var(--acento); color: var(--acento); }
+.descarga-corta svg { width: 17px; height: 17px; flex: none; }
+
+/* El botón del menú del teléfono, copiado de vendoo_web (16-sep-2026). Solo
+   se dibuja por debajo del corte Y con JavaScript (`:root[data-js]`, que pone
+   el script en línea del <head> antes del primer pintado). Sin script el
+   menú se ve entero, en una segunda fila. 44 × 44: el blanco táctil. */
+.menu__boton {
+  display: none; flex: none; width: 44px; height: 44px; place-items: center;
+  background: transparent; color: var(--texto); padding: 0;
+  border: 1px solid var(--borde); border-radius: 12px; cursor: pointer;
+}
+.menu__boton:hover { background: var(--superficie-2); }
+.menu__boton svg { width: 21px; height: 21px; }
+.menu__boton .menu__cerrar { display: none; }
+.menu__boton[aria-expanded="true"] .menu__abrir { display: none; }
+.menu__boton[aria-expanded="true"] .menu__cerrar { display: block; }
+
+/* EL CORTE: 1080 px. Medido el 23-sep-2026 con Chrome: marca 154 + seis
+   enlaces + badge 135 + tema 40 + los gap piden ~960 px, y `.envoltura` da
+   1032 a partir de 1080 de ventana. Si entra o sale algo de esta fila, hay que
+   volver a medirla, y mover también CORTE en sitio.js. */
+@media (max-width: 1080px) {
+  :root { --cabecera: 108px; }
+  .cabecera__fila { flex-wrap: wrap; min-height: 0; padding-block: 10px; row-gap: 4px; }
+  .tienda--cabecera { display: none; }
+  .descarga-corta { display: inline-flex; order: 2; }
+  .tema { order: 3; }
+  /* Sin JavaScript el menú baja a su propia fila y se PARTE en renglones si
+     no cabe: a 320 px los seis no entran en uno, y una barra con scroll
+     lateral cortaba «Privacidad» sin avisar que había más. */
+  .nav { order: 4; flex-basis: 100%; flex-wrap: wrap; gap: 0 2px; }
+  .nav a { padding: 8px 7px; font-size: .86rem; }
+
+  /* Con JavaScript: marca · botón · tema arriba, y el menú plegado. */
+  :root[data-js] { --cabecera: 64px; }
+  :root[data-js] .menu__boton { display: inline-grid; order: 2; }
+  :root[data-js] .tema { order: 3; }
+  :root[data-js] .nav { order: 4; }
+  :root[data-js] .descarga-corta { order: 5; flex-basis: 100%; justify-content: center; }
+  /* Plegado es `display: none`: así los enlaces escondidos no reciben foco. */
+  :root[data-js] .menu__boton[aria-expanded="false"] ~ .nav,
+  :root[data-js] .menu__boton[aria-expanded="false"] ~ .descarga-corta { display: none; }
+  :root[data-js] .menu__boton[aria-expanded="true"] ~ .nav {
+    display: flex; flex-direction: column; align-items: stretch; gap: 2px;
+    overflow: visible; padding-block: 8px 4px; margin-top: 6px;
+    border-top: 1px solid var(--borde);
+  }
+  :root[data-js] .menu__boton[aria-expanded="true"] ~ .nav a {
+    display: flex; align-items: center; min-height: 46px; padding: 10px 12px; font-size: .98rem;
+  }
+  :root[data-js] .menu__boton[aria-expanded="true"] ~ .nav a[aria-current="page"] {
+    box-shadow: inset 3px 0 0 var(--acento); border-radius: 0 10px 10px 0;
+  }
+  :root[data-js] .menu__boton[aria-expanded="true"] ~ .descarga-corta { display: flex; min-height: 46px; margin-bottom: 6px; }
+}
+/* En la fila, el texto «Descargar» se esconde SOLO a la vista (con
+   `display: none` el enlace se quedaría sin nombre accesible); en el panel
+   desplegado vuelve, porque un botón que solo enseña una flecha no dice a
+   dónde lleva. */
+@media (max-width: 420px) {
+  .descarga-corta { padding: 0 12px; }
+  .descarga-corta span {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+  :root[data-js] .menu__boton[aria-expanded="true"] ~ .descarga-corta span {
+    position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none;
+  }
+  .cabecera__fila { gap: 8px; }
+  :root { --cabecera: 150px; }
+  :root[data-js] { --cabecera: 64px; }
 }
 
 /* ---------- Secciones ---------- */
@@ -269,17 +366,291 @@ main { display: block; }
 .perdido p { color: var(--texto-2); }
 .perdido .heroe__acciones { justify-content: center; }
 
-/* ---------- Capturas de la app ---------- */
-
-/* Tres teléfonos en fila en escritorio; en el teléfono, una tira que se
-   desliza de lado con cada captura al 70 % del ancho, para que se vea que
-   hay más. */
-.capturas { display: flex; gap: 20px; margin-top: 28px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
-.captura { flex: 0 0 min(70vw, 300px); margin: 0; scroll-snap-align: center; }
-.captura img {
-  width: 100%; height: auto; border-radius: 26px;
-  border: 1.3px solid var(--borde); background: var(--superficie);
-}
-@media (min-width: 1000px) { .capturas { justify-content: center; overflow: visible; } }
-
 .mas { margin-top: 24px; font-weight: 600; }
+
+/* ==========================================================================
+   PORTADA (23-sep-2026). Encargo del dueño: «algo parecido a lo de vendoo,
+   una página bonita dinámica». La regla de composición es la de vendoo_web:
+   UNA idea por sección — rótulo, titular corto, una frase y un dibujo que
+   cuente el resto. Si algo se puede mostrar, no se escribe.
+
+   ⚠️ TODO SE VE EN REPOSO. Lo que se esconde para aparecer cuelga de
+   `[data-anim]`, que pone el <head> y que se retira solo a los dos segundos
+   si sitio.js no llegó. Sin JavaScript, o con `prefers-reduced-motion`, no
+   queda ni un `opacity: 0` en pie y cada dibujo está en su estado final.
+   ========================================================================== */
+
+.seccion--velo { background: var(--velo); }
+.seccion--fina { padding: 28px 0; }
+.seccion--fina + .seccion { border-top: 0; }
+
+.rotulo {
+  display: inline-block; font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--acento); margin-bottom: 12px;
+}
+.apagado { color: var(--texto-2); }
+.encabezado { max-width: 640px; margin-bottom: 36px; }
+.encabezado p { color: var(--texto-2); font-size: 1.05rem; margin: 0; }
+.encabezado--centro { text-align: center; margin-inline: auto; }
+
+.reja--2 { display: grid; gap: 40px; align-items: center; }
+@media (min-width: 900px) { .reja--2 { grid-template-columns: 1fr 1fr; gap: 56px; } }
+
+/* --- Portada ------------------------------------------------------------- */
+
+.portada { position: relative; overflow: hidden; padding: clamp(40px, 7vw, 88px) 0 clamp(48px, 7vw, 88px); }
+/* Un halo turquesa muy tenue detrás del teléfono. Decorativo: es cromo. */
+.portada::before {
+  content: ''; position: absolute; z-index: 0; pointer-events: none;
+  width: 720px; height: 720px; right: -220px; top: -160px; border-radius: 50%;
+  background: radial-gradient(closest-side, var(--acento-velo), transparent);
+}
+.portada__reja { position: relative; z-index: 1; display: grid; gap: 40px; align-items: center; }
+@media (min-width: 900px) { .portada__reja { grid-template-columns: 1.15fr .85fr; gap: 48px; } }
+.portada h1 { max-width: 15ch; font-size: clamp(2rem, 6vw, 3.3rem); }
+.portada h1 em { font-style: normal; color: var(--acento); }
+.entrada { font-size: clamp(1.05rem, 2.4vw, 1.22rem); color: var(--texto-2); max-width: 40ch; }
+
+/* Los badges oficiales: `.tienda` está arriba, con la cabecera. La zona de
+   respeto de la guía de Google es ¼ del alto (12 px a 48): el `gap` da 16. */
+.tiendas { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 28px; }
+.apoyo { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0 0; color: var(--texto-2); font-size: .9rem; max-width: 44ch; }
+.apoyo svg { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--acento); }
+
+.portada__visual { position: relative; display: grid; place-items: center; padding: 24px 0; }
+.ondas { position: absolute; width: min(118%, 520px); height: auto; left: 50%; top: 50%; transform: translate(-50%, -50%); overflow: visible; }
+.onda { fill: none; stroke: var(--acento); stroke-width: 1.6; transform-box: view-box; transform-origin: 200px 200px; }
+.onda--a { opacity: .45; }
+.onda--b { opacity: .25; }
+.onda--c { opacity: .12; }
+
+/* --- El marco del teléfono ----------------------------------------------- */
+/* Las capturas son crudas del Pixel sin la barra de estado (tool/imagenes.py):
+   el marco lo pone el sitio, con el agujero de la cámara arriba. La
+   proporción la dan los `width`/`height` del <img>. El cuerpo del teléfono es
+   oscuro en los dos temas, porque un teléfono de verdad lo es. */
+.telefono {
+  position: relative; margin: 0; width: 100%;
+  padding: 26px 9px 12px; border-radius: 40px;
+  background: var(--telefono); border: 1.3px solid var(--telefono-borde);
+  box-shadow: var(--sombra);
+}
+.telefono::before {
+  content: ''; position: absolute; top: 9px; left: 50%; width: 9px; height: 9px;
+  margin-left: -4.5px; border-radius: 50%; background: var(--telefono-camara);
+  box-shadow: 0 0 0 1.5px var(--telefono-borde);
+}
+.telefono img { display: block; width: 100%; height: auto; border-radius: 26px; background: #0E0E10; }
+.telefono--heroe { max-width: 290px; }
+@media (max-width: 420px) { .telefono--heroe { max-width: 240px; } }
+
+/* --- Cifras ------------------------------------------------------------- */
+/* Cuatro: saltos 4 → 2 y nunca 3 + 1 (la regla de vendoo_web). */
+.datos {
+  display: grid; gap: 1px; margin: 0; padding: 0; list-style: none;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1.3px solid var(--borde); border-radius: var(--radio);
+  background: var(--borde); overflow: hidden;
+}
+@media (min-width: 900px) { .datos { grid-template-columns: repeat(4, 1fr); } }
+.datos li { background: var(--superficie); padding: 18px 20px; }
+.datos b { display: block; font-size: 1.7rem; font-weight: 700; letter-spacing: -.03em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.datos span { color: var(--texto-2); font-size: .88rem; line-height: 1.35; display: block; }
+
+/* --- Las tres tareas ----------------------------------------------------- */
+.tareas { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 14px; }
+.tareas li { display: grid; grid-template-columns: 44px 1fr; gap: 2px 14px; align-items: start; }
+.tareas svg { grid-row: span 2; width: 44px; height: 44px; padding: 9px; border-radius: 12px; border: 1.3px solid var(--borde); color: var(--acento); }
+.tareas b { font-weight: 600; }
+.tareas span { color: var(--texto-2); font-size: .95rem; line-height: 1.45; }
+
+/* --- Infografías: SVG en línea pintado con los tokens --------------------- */
+/* Clases y no `fill="var(--x)"`: las variables no son fiables dentro de un
+   atributo de presentación. Tope de ancho SIEMPRE (la lección de vendoo_web:
+   un SVG a todo el ancho escala su texto con él), y viewBox angostos para que
+   a 320 px el texto no quede en 5 px. */
+.info { display: block; width: 100%; height: auto; max-width: 440px; margin-inline: auto; overflow: visible; font-family: "Poppins", system-ui, sans-serif; }
+.info--ancha { max-width: 500px; }
+.info text { font-size: 13px; }
+.d-tarjeta { fill: var(--superficie); stroke: var(--borde); stroke-width: 1.3; }
+.d-fila    { fill: var(--superficie-2); }
+.d-linea   { fill: var(--borde); }
+.d-tinta   { fill: var(--texto); }
+.d-suave   { fill: var(--texto-2); }
+.d-neg     { font-weight: 600; }
+.d-grande  { font-weight: 700; }
+.d-acento  { fill: var(--acento); }
+.d-acento-t{ fill: none; stroke: var(--acento); }
+.d-sobre   { fill: var(--acento-tinta); }
+.d-perilla { fill: #FFFFFF; }  /* la perilla encendida es blanca en los dos temas, como en la app */
+.d-exito   { fill: var(--exito); }
+.d-exito-b { fill: var(--exito-velo); stroke: var(--exito); stroke-width: 1.5; }
+.d-exito-t { fill: none; stroke: var(--exito); stroke-linecap: round; stroke-linejoin: round; }
+.d-cuerpo  { fill: var(--telefono); stroke: var(--telefono-borde); stroke-width: 1.3; }
+.d-pantalla{ fill: var(--fondo); stroke: var(--borde); stroke-width: 1.3; }
+.d-trazo   { fill: none; stroke: var(--texto-2); stroke-linecap: round; stroke-linejoin: round; }
+.d-pista   { fill: none; stroke: var(--borde); }
+.d-perilla-off { fill: var(--texto-2); }
+.d-sobre-t { fill: none; stroke: var(--acento-tinta); stroke-width: 2.2; stroke-linecap: round; }
+.d-bolsillo{ fill: var(--superficie-2); stroke: var(--borde); stroke-width: 1.3; }
+.d-costura { fill: none; stroke: var(--texto-2); stroke-width: 1.3; stroke-dasharray: 5 5; opacity: .7; }
+.centrado  { text-align: center; }
+
+/* --- La llamada, en tres tiempos ---------------------------------------- */
+.llamada { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; counter-reset: tiempo; }
+@media (min-width: 820px) { .llamada { grid-template-columns: repeat(3, 1fr); } }
+.llamada li {
+  counter-increment: tiempo; position: relative;
+  background: var(--superficie); border: 1.3px solid var(--borde); border-radius: var(--radio);
+  padding: 22px 22px 24px;
+}
+.llamada li::after {
+  content: counter(tiempo); position: absolute; top: 16px; left: 18px;
+  width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  border: 1.3px solid var(--acento); color: var(--acento); font-weight: 600; font-size: .85rem;
+}
+.llamada svg { display: block; width: 100%; max-width: 240px; height: auto; margin: 0 auto 14px; overflow: visible; }
+.llamada svg text { font-family: "Poppins", system-ui, sans-serif; }
+.llamada h3 { margin-bottom: .3em; }
+.llamada p { color: var(--texto-2); margin: 0; font-size: .95rem; }
+
+/* --- El turno: el tono y los dos relojes -------------------------------- */
+.relojes { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .relojes { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .relojes { grid-template-columns: repeat(4, 1fr); } }
+.relojes li {
+  background: var(--superficie); border: 1.3px solid var(--borde); border-radius: var(--radio);
+  padding: 22px; display: flex; flex-direction: column; gap: 6px;
+}
+.relojes svg { width: 96px; height: 96px; margin-bottom: 8px; overflow: visible; }
+.relojes svg text { font-family: "Poppins", system-ui, sans-serif; }
+.relojes b { font-size: 1.25rem; font-weight: 700; letter-spacing: -.01em; }
+.relojes span { color: var(--texto-2); font-size: .93rem; line-height: 1.45; }
+.dial-pista { fill: none; stroke: var(--borde); }
+.dial-arco  { fill: none; stroke: var(--acento); stroke-linecap: round; }
+.nota-fina { margin: 28px auto 0; max-width: 640px; text-align: center; color: var(--texto-2); font-size: .95rem; }
+
+/* --- Tu teléfono -------------------------------------------------------- */
+.mosaico { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .mosaico { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .mosaico { grid-template-columns: repeat(4, 1fr); } }
+.mosaico li { background: var(--superficie); border: 1.3px solid var(--borde); border-radius: var(--radio); padding: 20px; }
+.mosaico svg { width: 36px; height: 36px; color: var(--acento); margin-bottom: 12px; }
+.mosaico h3 { font-size: 1.02rem; margin-bottom: .3em; }
+.mosaico p { color: var(--texto-2); font-size: .92rem; margin: 0; line-height: 1.5; }
+
+/* --- Pantalla por pantalla ---------------------------------------------- */
+/* Seis teléfonos: 3 + 3 en escritorio. En el teléfono, una tira que se
+   desliza de lado (cada captura al ~70 % del ancho, para que se vea que hay
+   más): una columna de seis teléfonos serían 3.000 px de scroll. */
+.capturas {
+  list-style: none; margin: 0; padding: 4px 16px 16px; display: flex; gap: 18px;
+  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+  margin-inline: -16px;
+}
+.captura { flex: 0 0 min(68vw, 280px); scroll-snap-align: center; text-align: center; }
+.captura .telefono { margin-bottom: 14px; box-shadow: none; }
+.captura h3 { font-size: 1rem; margin-bottom: .2em; }
+.captura p { color: var(--texto-2); font-size: .9rem; margin: 0; }
+@media (min-width: 900px) {
+  .capturas { display: grid; grid-template-columns: repeat(3, minmax(0, 290px)); justify-content: center; gap: 40px 36px; overflow: visible; margin-inline: 0; padding: 0; }
+}
+
+/* --- Cómo entrar -------------------------------------------------------- */
+.descarga {
+  background: var(--superficie); border: 1.3px solid var(--borde); border-radius: var(--radio);
+  padding: 28px; text-align: center;
+}
+.descarga img.descarga__icono { width: 72px; height: 72px; border-radius: 18px; margin: 0 auto 14px; }
+.descarga h3 { margin-bottom: .3em; }
+.descarga p { color: var(--texto-2); font-size: .94rem; }
+.descarga .tiendas { justify-content: center; margin: 18px 0 16px; }
+.descarga .mas { margin: 0; }
+
+/* ==========================================================================
+   Movimiento. Copiado de vendoo_web: aparecer al entrar en pantalla (una
+   sola vez) y cada infografía arranca cuando se la ve.
+   ========================================================================== */
+[data-anim] .revelar { opacity: 0; transform: translateY(18px); }
+[data-anim] .revelar.visible {
+  opacity: 1; transform: none;
+  transition: opacity .55s ease, transform .55s cubic-bezier(.22, .8, .3, 1);
+}
+/* Escalonado por clase y NO por `style="--i:2"`: un atributo style obligaría
+   a abrir `style-src` a 'unsafe-inline'. */
+[data-anim] .revelar--b.visible { transition-delay: .1s; }
+[data-anim] .revelar--c.visible { transition-delay: .2s; }
+[data-anim] .revelar--d.visible { transition-delay: .3s; }
+
+/* Los interruptores: en reposo, ENCENDIDOS (el estado final es el legible).
+   Con [data-anim] empiezan apagados y se encienden uno tras otro al verse;
+   después la perilla del «Desliza» viaja y aparece «Estás activo». */
+[data-anim] .interruptores .pista-on { opacity: 0; }
+[data-anim] .interruptores .perilla { transform: translateX(-22px); }
+[data-anim] .interruptores .deslizador { transform: translateX(-226px); }
+[data-anim] .interruptores .activo { opacity: 0; }
+[data-anim] .visible .interruptores .pista-on { animation: a-opaco .3s both; }
+[data-anim] .visible .interruptores .perilla { animation: a-perilla .3s both; }
+[data-anim] .visible .interruptores .i-2 { animation-delay: .75s; }
+[data-anim] .visible .interruptores .i-3 { animation-delay: 1.1s; }
+[data-anim] .visible .interruptores .i-1 { animation-delay: .4s; }
+[data-anim] .visible .interruptores .deslizador { animation: a-deslizar 1s 1.6s cubic-bezier(.5, 0, .2, 1) both; }
+[data-anim] .visible .interruptores .activo { animation: a-opaco .5s 2.7s both; }
+@keyframes a-opaco { from { opacity: 0; } to { opacity: 1; } }
+@keyframes a-perilla { from { transform: translateX(-22px); } to { transform: none; } }
+@keyframes a-deslizar { from { transform: translateX(-226px); } to { transform: none; } }
+
+/* La tilde de «Es tuya» se dibuja; los arcos de los relojes se llenan. */
+[data-anim] .tilde { stroke-dasharray: 40; stroke-dashoffset: 40; }
+[data-anim] .visible .tilde { animation: a-trazar .6s .5s ease-out forwards; }
+[data-anim] .dial-arco { stroke-dashoffset: var(--arco, 251.4); }
+[data-anim] .visible .dial-arco { animation: a-trazar 1.6s .3s ease-out forwards; }
+@keyframes a-trazar { to { stroke-dashoffset: 0; } }
+
+/* La franja del turno en el día: crece desde la entrada hasta la salida. */
+[data-anim] .dia-turno { transform: scaleX(0); transform-box: fill-box; transform-origin: left center; }
+[data-anim] .visible .dia-turno { animation: a-crecer 1.3s .3s cubic-bezier(.3, 0, .2, 1) forwards; }
+[data-anim] .dia-pin { opacity: 0; }
+[data-anim] .visible .dia-pin { animation: a-caer .45s both; }
+[data-anim] .visible .dia-pin--salida { animation-delay: 1.5s; }
+[data-anim] .dia-rotulo { opacity: 0; }
+[data-anim] .visible .dia-rotulo { animation: a-opaco .5s 1.7s both; }
+@keyframes a-crecer { to { transform: scaleX(1); } }
+@keyframes a-caer { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+
+/* Lo que se mueve en bucle, y solo si la persona no pidió quietud: las ondas
+   de la llamada, el teléfono que zumba en el bolsillo, la cuenta atrás, la
+   perilla que desliza y las barras del tono. */
+@media (prefers-reduced-motion: no-preference) {
+  .onda { animation: a-onda 3.2s ease-out infinite; }
+  .onda--b { animation-delay: 1.05s; }
+  .onda--c { animation-delay: 2.1s; }
+  .telefono--heroe { animation: a-zumbar 3.2s ease-in-out infinite; }
+  .zumba { transform-box: fill-box; transform-origin: center bottom; animation: a-zumbar 2.4s ease-in-out infinite; }
+  .vibra { animation: a-latir 2.4s ease-in-out infinite; }
+  .cuenta { transform-box: fill-box; transform-origin: left center; animation: a-cuenta 6s linear infinite; }
+  .toma { animation: a-tomar 6s ease-in-out infinite; }
+  .tono-barra { transform-box: fill-box; transform-origin: center bottom; animation: a-tono 2.4s ease-in-out infinite; }
+  .tono-barra--2 { animation-delay: .15s; }
+  .tono-barra--3 { animation-delay: .3s; }
+}
+@keyframes a-onda { 0% { transform: scale(.72); opacity: .55; } 100% { transform: scale(1.18); opacity: 0; } }
+@keyframes a-zumbar {
+  0%, 16%, 100% { transform: none; }
+  2%, 6%, 10% { transform: rotate(-1.6deg); }
+  4%, 8%, 12% { transform: rotate(1.6deg); }
+}
+@keyframes a-latir { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+@keyframes a-cuenta { from { transform: scaleX(1); } to { transform: scaleX(.08); } }
+@keyframes a-tomar { 0%, 45% { transform: none; } 65%, 100% { transform: translateX(62px); } }
+@keyframes a-tono { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(.55); } }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-anim] .revelar { opacity: 1; transform: none; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+/* El largo de cada arco, en unidades de usuario (r 40 → 251,4; r 28 → 176).
+   Sin `pathLength`: WebKit no lo respeta en <circle> en todas las versiones. */
+.dial-20 { --arco: 83.8; }
+.dial-30 { --arco: 88; }
+.dial-60 { --arco: 251.4; }

@@ -19,9 +19,20 @@ Sin dependencias: solo la biblioteca estándar. Revisa, en cada página:
 9. El naranja de GUUAO (#E95019) no aparece en ningún lado (docs/MARCA.md
    de la app: en Work no existe).
 10. La analítica está en las cinco páginas (assets/js/analitica.js).
+11. Ningún atributo `style=` (la CSP dice `style-src 'self'` y el navegador
+    lo ignoraría en silencio).
+12. Todo enlace a Google Play nombra el MISMO paquete (com.leiros.guuaowork):
+    el badge vive repetido en la cabecera, el héroe, «Cómo entrar» y el pie,
+    y una copia vieja no se nota a simple vista. (No sale a la red: no
+    comprueba que la ficha conteste, eso se mira con curl.)
+13. Cada <img> lleva alt, width y height (sin las medidas la página salta).
+14. Las derivadas WebP de las capturas salen de la maestra que está hoy en el
+    repo (huella en assets/img/capturas/derivadas.json, que escribe
+    tool/imagenes.py).
 """
 import base64
 import hashlib
+import json
 import pathlib
 import re
 import sys
@@ -32,6 +43,7 @@ RAIZ = pathlib.Path(__file__).resolve().parent.parent
 DOMINIO = 'work.guuao.com'
 PAGINAS = ['index.html', 'soporte.html', 'privacidad.html', 'terminos.html', '404.html']
 SIN_INDICE = {'404.html'}
+PAQUETE_PLAY = 'com.leiros.guuaowork'
 VACIAS = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'}
 # Dentro de <svg> hay elementos que se cierran solos (<path/>): el parser los
 # entrega como startendtag y no hace falta listarlos.
@@ -57,9 +69,21 @@ class Lector(HTMLParser):
         self._en_titulo = False
         self.aria_current = []  # href de los enlaces con aria-current
         self.problemas = []
+        self.play = []          # href de los enlaces a Google Play
+
+    def revisar(self, tag, a):
+        if 'style' in a:
+            self.problemas.append(f'línea {self.getpos()[0]}: atributo style= en <{tag}> (la CSP lo bloquea: usa una clase)')
+        if tag == 'img':
+            for atr in ('alt', 'width', 'height'):
+                if atr not in a:
+                    self.problemas.append(f'línea {self.getpos()[0]}: <img> sin {atr}')
+        if tag == 'a' and 'play.google.com' in a.get('href', ''):
+            self.play.append(a['href'])
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
+        self.revisar(tag, a)
         if tag == 'html':
             self.lang = a.get('lang')
         if 'id' in a:
@@ -84,6 +108,7 @@ class Lector(HTMLParser):
 
     def handle_startendtag(self, tag, attrs):
         a = dict(attrs)
+        self.revisar(tag, a)
         if 'id' in a:
             self.ids.add(a['id'])
         for atr in ('href', 'src'):
@@ -221,6 +246,11 @@ def main():
         if '<script type="module" src="/assets/js/analitica.js"></script>' not in texto:
             error(p, 'falta la analítica (assets/js/analitica.js)')
 
+        # 12. Un solo paquete de Play en todo el sitio
+        for href in lec.play:
+            if f'id={PAQUETE_PLAY}' not in href:
+                error(p, f'enlace a Google Play con otro paquete: {href} (se espera {PAQUETE_PLAY})')
+
         # 9. El naranja
         if re.search(r'#e95019', texto, re.I):
             error(p, 'aparece el naranja #E95019, que en GUUAO Work no existe')
@@ -240,12 +270,37 @@ def main():
     sm = (RAIZ / 'sitemap.xml').read_text(encoding='utf-8')
     en_mapa = set(re.findall(r'<loc>https://' + re.escape(DOMINIO) + r'/([^<]*)</loc>', sm))
     esperadas = {('' if p == 'index.html' else p) for p in PAGINAS if p not in SIN_INDICE}
+    # Y las doce del manual: cada archivo de docs/ tiene que estar en el mapa
+    # (docs/index.html como `docs/`). Su HTML lo revisa tool/verificar_docs.py.
+    esperadas |= {('docs/' if f.name == 'index.html' else 'docs/' + f.name)
+                  for f in (RAIZ / 'docs').glob('*.html')}
     if en_mapa != esperadas:
         error('sitemap.xml', f'sobran {sorted(en_mapa - esperadas)} / faltan {sorted(esperadas - en_mapa)}')
 
     for archivo in ('assets/css/estilo.css', 'assets/js/sitio.js', 'favicon.svg'):
         if re.search(r'#e95019', (RAIZ / archivo).read_text(encoding='utf-8'), re.I):
             error(archivo, 'aparece el naranja #E95019')
+
+    # 14. Las capturas: la huella de cada maestra contra derivadas.json, y
+    # sus tres WebP. Sin esto, cambiar una maestra sin correr
+    # tool/imagenes.py serviría la pantalla vieja en WebP sin que nadie lo note.
+    capturas = RAIZ / 'assets' / 'img' / 'capturas'
+    huellas_json = capturas / 'derivadas.json'
+    if capturas.exists():
+        try:
+            huellas = json.loads(huellas_json.read_text(encoding='utf-8'))
+        except (OSError, ValueError) as exc:
+            error('assets/img/capturas/derivadas.json', f'falta o no es JSON válido ({exc}): corre `python3 tool/imagenes.py`')
+            huellas = {}
+        maestras = sorted(capturas.glob('*.png'))
+        for m in maestras:
+            if hashlib.sha256(m.read_bytes()).hexdigest() != huellas.get(m.name):
+                error(f'assets/img/capturas/{m.name}', 'cambió y sus WebP son de la versión anterior: corre `python3 tool/imagenes.py`')
+            if len(list(capturas.glob(f'{m.stem}-*.webp'))) < 3:
+                error(f'assets/img/capturas/{m.name}', 'le faltan sus WebP: corre `python3 tool/imagenes.py`')
+        for nombre in huellas:
+            if not (capturas / nombre).exists():
+                error('assets/img/capturas/derivadas.json', f'nombra {nombre}, que ya no existe')
 
     if (RAIZ / 'CNAME').read_text().strip() != DOMINIO:
         error('CNAME', f'debe decir {DOMINIO}')

@@ -2,7 +2,7 @@
 <html lang="es-VE">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/b8tLwtLEebYdFwXHSokyqVvhibOvCcncQIsgqf0Yw4=' https://www.gstatic.com https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://*.google-analytics.com https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-GCNYPJpUArudnOwGJbHuECSD2ykDTSUhKyo0X4Y6+X8=' https://www.gstatic.com https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://*.google-analytics.com https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GUUAO Work — la app del equipo de tienda de GUUAO</title>
 <meta name="description" content="La app de los operadores de tienda de GUUAO: prepara pedidos, entrega y recibe devoluciones. Solo trabaja mientras estás de turno.">
@@ -29,11 +29,15 @@
 <link rel="dns-prefetch" href="https://www.gstatic.com">
 <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/assets/css/estilo.css">
-<!-- Lo único que corre antes del primer pintado: el tema elegido (si
-     esperara a sitio.js, que va con defer, la página parpadearía) y la marca
-     data-js, sin la que el botón del tema no se dibuja. Su hash está en la
-     CSP de arriba: si lo tocas, tool/verificar.py te dice el nuevo. -->
-<script>try{var t=localStorage.getItem('guuao-work-tema');if(t==='claro'||t==='oscuro'){document.documentElement.setAttribute('data-tema',t);}}catch(e){}document.documentElement.setAttribute('data-js','1');</script>
+<!-- Lo único que corre antes del primer pintado, y por eso en línea (su hash
+     está en la CSP de arriba: si lo tocas, tool/verificar.py te dice el nuevo,
+     que va en las cinco páginas y en _headers):
+     1. el tema elegido (con `defer` la página parpadearía);
+     2. `data-js`, de la que cuelgan el botón del tema y el menú plegable;
+     3. `data-anim`, que habilita las animaciones de entrada. Se QUITA SOLO a
+        los dos segundos si sitio.js no marcó `data-listo`: sin esa red, un
+        script que no carga dejaría media portada en opacity 0. -->
+<script>try{var t=localStorage.getItem('guuao-work-tema');if(t==='claro'||t==='oscuro'){document.documentElement.setAttribute('data-tema',t);}}catch(e){}var h=document.documentElement;h.setAttribute('data-js','1');h.setAttribute('data-anim','1');setTimeout(function(){if(!h.hasAttribute('data-listo')){h.removeAttribute('data-anim');}},2000);</script>
 <script src="/assets/js/sitio.js" defer></script>
 <!-- Analítica (GA4 por Firebase), decisión del dueño del 23-sep-2026. Lo
      único externo del sitio; explicado en assets/js/analitica.js. -->
@@ -46,12 +50,30 @@
     <a class="marca" href="/" aria-label="GUUAO Work, ir al inicio">
       <svg role="img" aria-label="GUUAO Work" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="29.36 40.02 650.64 93.64"><g><path fill="currentColor" d="M417.52,44.14c0.68,0.07,1.37,0.14,2.05,0.19c7.89,0.68,15.06,3.3,21.35,8.13 c8.3,6.37,13.27,14.82,15.35,25.02c0.76,3.74,1.04,7.53,0.85,11.33c-0.54,10.81-4.33,20.29-11.87,28.14 c-5.77,6.02-12.78,9.87-20.93,11.63c-2.68,0.58-5.38,0.88-8.12,0.92c-9.81,0.13-18.69-2.58-26.45-8.64 c-6.53-5.09-10.96-11.68-13.55-19.51c-1.03-3.11-1.68-6.3-1.99-9.57c-0.79-8.23,0.27-16.18,3.87-23.66 c5.77-12.01,15.14-19.7,28.13-22.88c2.42-0.59,4.88-0.9,7.36-1.02c0.13-0.01,0.25-0.04,0.38-0.07 C415.14,44.14,416.33,44.14,417.52,44.14z M383.87,87.51c-0.03,1.84,0.25,4.48,0.82,7.09c1.48,6.69,4.54,12.53,9.56,17.23 c7.78,7.28,17.03,9.89,27.45,8c8.66-1.57,15.37-6.26,20.15-13.65c3.31-5.12,4.96-10.78,5.33-16.85c0.24-3.99-0.09-7.91-1.12-11.77 c-1.88-7.06-5.54-13.02-11.3-17.56c-7.45-5.87-15.94-7.91-25.23-6.18c-9.74,1.81-16.89,7.28-21.6,15.94 C385.09,75.03,383.88,80.71,383.87,87.51z"/><path fill="currentColor" d="M76.5,44.14c0.83,0.07,1.66,0.14,2.49,0.2c7.21,0.48,13.91,2.58,19.93,6.6c2.36,1.58,4.56,3.4,6.83,5.12 c0.05,0.04,0.09,0.09,0.16,0.18c-2.11,2.42-4.22,4.83-6.34,7.27c-0.86-0.73-1.69-1.45-2.53-2.16c-4.29-3.64-9.12-6.22-14.67-7.26 c-2.08-0.39-4.2-0.6-6.31-0.75c-4.46-0.31-8.79,0.33-12.94,2.03c-6.92,2.83-12.03,7.66-15.59,14.18c-2.13,3.91-3.4,8.1-3.93,12.51 c-0.38,3.13-0.35,6.26-0.03,9.4c0.46,4.43,1.55,8.69,3.59,12.66c4.2,8.2,10.84,13.33,19.79,15.49c2.47,0.6,4.98,0.88,7.52,0.91 c8.76,0.11,16.61-2.55,23.65-7.7c0.25-0.18,0.36-0.37,0.36-0.69c-0.01-6.32-0.01-12.64-0.01-18.96c0-0.13-0.01-0.26-0.02-0.44 c-8.75,0-17.49,0-26.28,0c0-3.1,0-6.15,0-9.24c11.89,0,23.79,0,35.76,0c0,0.19,0,0.38,0,0.57c0,10.68,0,21.36,0.01,32.04 c0,0.4-0.12,0.66-0.41,0.92c-6.51,5.78-14.03,9.56-22.52,11.43c-3.04,0.67-6.13,1.01-9.24,1.06c-6.03,0.09-11.89-0.82-17.5-3.08 c-8.89-3.58-15.55-9.64-19.97-18.14c-2.23-4.29-3.65-8.85-4.3-13.64c-0.25-1.87-0.36-3.76-0.53-5.64 c-0.01-0.11-0.04-0.22-0.07-0.33c0-1.09,0-2.17,0-3.26c0.02-0.11,0.06-0.22,0.07-0.33c0.1-2.96,0.51-5.88,1.23-8.76 c2.43-9.69,7.32-17.84,15.24-24.04c6.02-4.71,12.9-7.29,20.51-7.96c0.7-0.06,1.4-0.13,2.1-0.2C73.87,44.14,75.18,44.14,76.5,44.14 z"/><path fill="currentColor" d="M370.15,128.17c-0.43,0-0.79,0-1.15,0c-2.98,0-5.96-0.01-8.95,0.01c-0.39,0-0.57-0.11-0.73-0.46 c-3.19-7.06-6.41-14.11-9.6-21.16c-0.16-0.35-0.33-0.48-0.72-0.48c-14.36,0.01-28.73,0.01-43.09,0c-0.43,0-0.6,0.17-0.76,0.52 c-3.19,7.04-6.39,14.07-9.58,21.12c-0.16,0.36-0.34,0.47-0.73,0.47c-3.08-0.02-6.16-0.01-9.24-0.01c-0.15,0-0.29,0-0.5,0 c0.07-0.18,0.11-0.31,0.17-0.44c5.77-12.47,11.53-24.93,17.3-37.4c5.33-11.51,10.66-23.02,15.99-34.53 c1.61-3.48,3.23-6.97,4.83-10.46c0.13-0.29,0.28-0.42,0.62-0.42c2.41,0.02,4.81,0.02,7.22,0c0.33,0,0.48,0.1,0.62,0.4 c8.08,17.47,16.17,34.94,24.26,52.41c4.61,9.96,9.22,19.93,13.83,29.89C370,127.79,370.06,127.96,370.15,128.17z M309.63,96.95 c11.91,0,23.75,0,35.64,0c-5.93-13.03-11.83-26.01-17.77-39.08C321.53,70.93,315.59,83.92,309.63,96.95z"/><path fill="currentColor" d="M181.97,45.55c3.23,0,6.42,0,9.66,0c0,0.2,0,0.38,0,0.55c0,15.83,0.04,31.67-0.02,47.5 c-0.02,6.18-1.08,12.2-3.75,17.84c-4.28,9.05-11.39,14.62-21.1,16.93c-4.21,1-8.49,1.21-12.79,0.9c-4.57-0.32-8.95-1.34-13.1-3.33 c-6.08-2.91-10.59-7.42-13.65-13.41c-1.86-3.64-2.98-7.52-3.59-11.56c-0.38-2.53-0.55-5.06-0.55-7.61c-0.01-15.7,0-31.4,0-47.1 c0-0.23,0-0.45,0-0.7c3.24,0,6.43,0,9.66,0c0,0.23,0,0.44,0,0.64c0,15.55-0.01,31.11,0.01,46.66c0,3.86,0.42,7.67,1.58,11.37 c1.36,4.33,3.59,8.1,7.14,11c2.78,2.27,5.97,3.68,9.47,4.4c5.11,1.04,10.21,0.98,15.23-0.47c6.96-2.02,11.51-6.61,13.9-13.39 c0.96-2.72,1.52-5.54,1.69-8.42c0.12-1.97,0.18-3.94,0.19-5.91c0.01-15.08,0.01-30.15,0.01-45.23 C181.97,45.99,181.97,45.78,181.97,45.55z"/><path fill="currentColor" d="M208.78,45.54c3.26,0,6.43,0,9.66,0c0,0.23,0,0.43,0,0.64c0,15.7-0.02,31.4,0.01,47.1 c0.01,4.31,0.59,8.55,2.15,12.6c2.83,7.36,8.09,11.97,15.78,13.68c5.31,1.18,10.63,1.07,15.85-0.52 c6.45-1.97,10.81-6.23,13.25-12.48c1.04-2.66,1.67-5.43,1.89-8.27c0.16-2.01,0.28-4.04,0.28-6.05 c0.02-15.34,0.01-30.68,0.01-46.01c0-0.21,0-0.42,0-0.67c3.21,0,6.4,0,9.66,0c0,0.17,0,0.34,0,0.51c0,15.77,0.03,31.53-0.02,47.3 c-0.02,5.98-0.98,11.81-3.42,17.32c-3.98,8.98-10.74,14.77-20.21,17.37c-4.6,1.27-9.29,1.54-14.04,1.21 c-4.77-0.34-9.35-1.42-13.62-3.59c-7.04-3.56-11.79-9.17-14.58-16.48c-1.2-3.13-1.98-6.36-2.29-9.69 c-0.2-2.14-0.36-4.29-0.36-6.44c-0.03-15.6-0.02-31.2-0.02-46.8C208.78,46.04,208.78,45.81,208.78,45.54z"/><path fill="currentColor" d="M470.4,54.18c0-5.42,4.32-9.73,9.75-9.73c5.35,0,9.72,4.38,9.71,9.75c-0.01,5.42-4.37,9.7-9.85,9.7 C474.7,63.89,470.4,59.53,470.4,54.18z M480.14,61.92c4.2,0,7.71-3.49,7.72-7.68c0.01-4.33-3.46-7.83-7.77-7.83 c-4.2,0-7.72,3.52-7.73,7.74C472.36,58.43,475.85,61.92,480.14,61.92z"/><path fill="currentColor" d="M425.8,102.4c-0.07,5.08-3.61,9.36-8.54,10.25c-4.9,0.88-9.78-2.13-11.34-7.01 c-1.74-5.41,1.16-11.26,6.45-13.03c5.61-1.89,11.7,1.49,13.05,7.27C425.6,100.71,425.67,101.56,425.8,102.4z M420.61,102.17 c-0.05-0.29-0.08-0.85-0.24-1.38c-0.64-2.12-2.03-3.5-4.26-3.78c-1.95-0.24-3.56,0.48-4.67,2.14c-1.3,1.96-1.21,4.83,0.18,6.73 c1.66,2.27,4.78,2.69,6.98,0.92C419.99,105.69,420.57,104.19,420.61,102.17z"/><path fill="currentColor" d="M484.56,59.05c-0.8,0-1.5,0.02-2.2-0.02c-0.15-0.01-0.32-0.2-0.42-0.34c-0.66-0.96-1.33-1.92-1.94-2.91 c-0.28-0.46-0.6-0.7-1.15-0.61c-0.19,0.03-0.39,0-0.64,0c0,1.29,0,2.55,0,3.84c-0.67,0-1.29,0-1.94,0c0-3.22,0-6.45,0-9.73 c0.96,0,1.91-0.01,2.85,0c0.81,0.01,1.62-0.05,2.41,0.06c1.4,0.2,2.34,1.25,2.49,2.61c0.13,1.24-0.6,2.43-1.83,2.98 c-0.07,0.03-0.15,0.07-0.28,0.13C482.78,56.37,483.64,57.66,484.56,59.05z M478.23,53.13c0.33,0.02,0.64,0.07,0.95,0.07 c0.64,0,1.28-0.02,1.92-0.04c0.52-0.02,0.88-0.34,0.93-0.83c0.05-0.47-0.27-0.96-0.77-0.98c-1.01-0.05-2.02-0.02-3.04-0.02 C478.23,51.94,478.23,52.53,478.23,53.13z"/></g><g><rect x="503.13" y="69.73" width="170.37" height="38.08" rx="6.1" ry="6.1" fill="none" class="marca__recuadro" stroke-width="5"/><path fill="currentColor" d="M523.91,75.82L529.32,75.82L537.51,102.44L532.11,102.44ZM539.21,75.82L544.62,75.82L537.51,102.44L532.11,102.44ZM539.21,75.82L544.62,75.82L551.72,102.44L546.31,102.44ZM554.51,75.82L559.91,75.82L551.72,102.44L546.31,102.44Z"/><path fill="currentColor" d="M568.91,89.13A13,13.31 0 1 1 594.91,89.13A13,13.31 0 1 1 568.91,89.13ZM574.13,89.13A7.78,8.48 0 1 0 589.69,89.13A7.78,8.48 0 1 0 574.13,89.13Z"/><path fill="currentColor" d="M603.91,75.82h5.02v26.62h-5.02V75.82z M606.2,87.28h8.51c0.6,0,1.13-0.14,1.58-0.41c0.46-0.28,0.81-0.66,1.07-1.16c0.26-0.5,0.38-1.07,0.38-1.72c0-0.66-0.13-1.24-0.38-1.75s-0.6-0.9-1.06-1.17c-0.46-0.28-0.99-0.41-1.6-0.41h-8.51v-4.83h8.39c1.66,0,3.12,0.34,4.39,1.02c1.26,0.68,2.24,1.63,2.94,2.87c0.7,1.23,1.04,2.66,1.04,4.28c0,1.62-0.35,3.05-1.04,4.28c-0.7,1.23-1.68,2.18-2.94,2.85c-1.26,0.67-2.73,1.01-4.39,1.01h-8.39V87.28z"/><path fill="currentColor" d="M608.71,92.11L614.12,92.11L623.01,102.44L617.61,102.44Z"/><path fill="currentColor" d="M632.01,75.82L637.03,75.82L637.03,102.44L632.01,102.44ZM646.31,75.82L651.72,75.82L640.72,91.5L635.31,91.5ZM635.31,86.8L640.72,86.8L652.72,102.44L647.31,102.44Z"/></g></svg>
     </a>
-    <nav class="nav" aria-label="Navegación principal">
+    <!-- El botón del menú va ANTES del <nav> a propósito (así el tabulador
+         llega al control antes que a lo que despliega) y solo se dibuja en
+         pantalla angosta y con JavaScript. Copiado de vendoo_web. -->
+    <button class="menu__boton" type="button" aria-expanded="false" aria-controls="menu-principal" aria-label="Menú">
+      <svg class="menu__abrir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="menu__cerrar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="menu-principal" aria-label="Navegación principal">
       <a href="/" aria-current="page">Inicio</a>
+      <a href="/#como">Cómo funciona</a>
       <a href="/#tu-telefono">Tu teléfono</a>
+      <a href="/docs/">Manual</a>
       <a href="/soporte.html">Soporte</a>
       <a href="/privacidad.html">Privacidad</a>
     </nav>
+    <!-- El badge OFICIAL de Google Play (assets/img/tiendas/, no se edita).
+         La ficha contesta 404 hasta que la app salga a producción. -->
+    <a class="tienda tienda--cabecera" href="https://play.google.com/store/apps/details?id=com.leiros.guuaowork" target="_blank" rel="noopener">
+      <img src="/assets/img/tiendas/google-play.svg" alt="Descargar en Google Play" width="135" height="40">
+    </a>
+    <a class="descarga-corta" href="/#descargar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M4 20h16"/></svg>
+      <span>Descargar</span>
+    </a>
     <button class="tema" type="button" aria-label="Cambiar el tema">
       <svg class="tema__luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
       <svg class="tema__sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -59,89 +81,393 @@
   </div>
 </header>
 <main id="principal">
-<section class="heroe">
-  <div class="envoltura">
-    <span class="heroe__rotulo">Para el equipo de tienda</span>
-    <h1>El trabajo de la tienda, en tu teléfono.</h1>
-    <p class="heroe__bajada">Prepara pedidos, entrega y recibe devoluciones, uno a la vez y a tiempo. Enciéndete al llegar. Al apagarte, tu teléfono no vuelve a sonar.</p>
-    <div class="heroe__acciones">
-      <a class="boton boton--principal" href="#entrar">Cómo entrar</a>
-      <a class="boton boton--contorno" href="/soporte.html">Soporte</a>
+<section class="portada">
+  <div class="envoltura portada__reja">
+    <div class="portada__texto">
+      <span class="rotulo">Para el equipo de tienda de GUUAO</span>
+      <h1>El trabajo de la tienda, <em>en tu bolsillo</em>.</h1>
+      <p class="entrada">Enciéndete al llegar y el trabajo te llega solo. Al apagarte, tu teléfono no vuelve a sonar.</p>
+      <!-- `id="descargar"`: a donde lleva el botón corto de la cabecera en
+           el teléfono. El badge es el OFICIAL (assets/img/tiendas/), a 48 px.
+           ⚠️ Medido el 23-sep-2026: la ficha contesta 404 hasta que la app
+           salga a producción en Play. Se comprueba con
+             curl -o /dev/null -w '%{http_code}' 'https://play.google.com/store/apps/details?id=com.leiros.guuaowork'
+           Y la nota de abajo NO se quita: cualquiera la puede instalar, pero
+           sin una cuenta que da el encargado no hace nada. -->
+      <div class="tiendas" id="descargar">
+        <a class="tienda" href="https://play.google.com/store/apps/details?id=com.leiros.guuaowork" target="_blank" rel="noopener">
+          <img src="/assets/img/tiendas/google-play.svg" alt="Descargar en Google Play" width="162" height="48">
+        </a>
+        <a class="boton boton--contorno" href="/docs/">Lee el manual</a>
+      </div>
+      <p class="apoyo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        <span>Es la app interna del equipo: la cuenta te la da tu encargado de tienda. Sin ella, la app no hace nada.</span>
+      </p>
     </div>
+    <div class="portada__visual">
+      <svg class="ondas" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+        <circle class="onda onda--a" cx="200" cy="200" r="150"/>
+        <circle class="onda onda--b" cx="200" cy="200" r="175"/>
+        <circle class="onda onda--c" cx="200" cy="200" r="198"/>
+      </svg>
+      <figure class="telefono telefono--heroe">
+        <picture>
+          <source type="image/webp" srcset="/assets/img/capturas/llamada-360.webp 360w, /assets/img/capturas/llamada-720.webp 720w, /assets/img/capturas/llamada-1068.webp 1068w" sizes="(min-width: 421px) 272px, 222px">
+          <img src="/assets/img/capturas/llamada.png" width="1068" height="2294" fetchpriority="high" decoding="async" alt="La llamada de GUUAO Work: ENTREGAR, cliente esperando, el código de retiro K-42, tres bultos en el rack B2, 56 segundos antes de pasar al siguiente, y los botones «Yo lo entrego» y «No puedo». Es una llamada de prueba.">
+        </picture>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="seccion seccion--fina" aria-label="GUUAO Work en cuatro números">
+  <div class="envoltura">
+    <ul class="datos revelar">
+      <li><b>1</b><span>tienda a la vez</span></li>
+      <li><b data-cifra="3">3</b><span>tareas que tú enciendes</span></li>
+      <li><b data-cifra="60" data-formato="%d s">60 s</b><span>para tomar una llamada</span></li>
+      <li><b>0</b><span>avisos sin turno activo</span></li>
+    </ul>
   </div>
 </section>
 
 <section class="seccion" id="que-hace" aria-labelledby="que-hace-t">
-  <div class="envoltura">
-    <h2 id="que-hace-t">Tres tareas. Tú eliges cuáles atiendes.</h2>
-    <p class="seccion__bajada">Haces check-in en una tienda, enciendes las tareas que vas a atender y el trabajo te llega solo.</p>
-    <div class="reja">
-      <article class="tarjeta">
-        <svg class="tarjeta__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 10h14l-1.5 9h-11z"/><path d="M9 10l3-6 3 6"/><circle cx="12" cy="14.5" r="1"/></svg>
-        <h3>Pedidos</h3>
-        <p>La lista de lo que hay que recoger, producto por producto. Escanea, marca lo que no hay y deja el pedido listo antes de la hora.</p>
-      </article>
-      <article class="tarjeta">
-        <svg class="tarjeta__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
-        <h3>Entregas</h3>
-        <p>Entrega en el mostrador o sal a repartir. Te dice a quién, dónde y qué verificar antes de soltar el pedido.</p>
-      </article>
-      <article class="tarjeta">
-        <svg class="tarjeta__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>
-        <h3>Devoluciones</h3>
-        <p>Recibe lo que el cliente devuelve, con la autorización de soporte ya en la pantalla.</p>
-      </article>
+  <div class="envoltura reja--2">
+    <div class="revelar">
+      <span class="rotulo">Qué haces</span>
+      <h2 id="que-hace-t">Tres tareas. Tú eliges cuáles atiendes.</h2>
+      <p class="apagado">Haces check-in en una tienda, enciendes lo que vas a atender y deslizas para empezar.</p>
+      <ul class="tareas">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 10h14l-1.5 9h-11z"/><path d="M9 10l3-6 3 6"/><circle cx="12" cy="14.5" r="1"/></svg>
+          <b>Pedidos</b>
+          <span>Recoges producto por producto, con la cámara como escáner.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+          <b>Entregas</b>
+          <span>En el mostrador o a domicilio, bulto por bulto.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>
+          <b>Devoluciones</b>
+          <span>Recibes lo que soporte ya autorizó.</span>
+        </li>
+      </ul>
+    </div>
+    <div class="revelar revelar--b">
+      <svg class="info interruptores" viewBox="0 0 360 330" role="img" aria-labelledby="int-t int-d">
+        <title id="int-t">Enciendes las tareas que vas a atender</title>
+        <desc id="int-d">Tres interruptores —Pedidos, Entregas y Devoluciones— que se encienden uno tras otro. Debajo, el control «Desliza para encender» y, al final, la pastilla «Estás activo».</desc>
+        <rect class="d-tarjeta" x="1" y="1" width="358" height="328" rx="20"/>
+        <text class="d-tinta d-neg" x="24" y="40" font-size="15">¿Qué vas a atender hoy?</text>
+
+        <rect class="d-fila" x="20" y="58" width="320" height="44" rx="12"/>
+        <text class="d-tinta" x="38" y="85">Pedidos</text>
+        <rect class="d-pista" x="278" y="68" width="46" height="24" rx="12" stroke-width="1.5"/>
+        <circle class="d-perilla-off" cx="290" cy="80" r="7"/>
+        <rect class="d-acento pista-on i-1" x="278" y="68" width="46" height="24" rx="12"/>
+        <circle class="d-perilla perilla i-1" cx="312" cy="80" r="8"/>
+
+        <rect class="d-fila" x="20" y="112" width="320" height="44" rx="12"/>
+        <text class="d-tinta" x="38" y="139">Entregas</text>
+        <rect class="d-pista" x="278" y="122" width="46" height="24" rx="12" stroke-width="1.5"/>
+        <circle class="d-perilla-off" cx="290" cy="134" r="7"/>
+        <rect class="d-acento pista-on i-2" x="278" y="122" width="46" height="24" rx="12"/>
+        <circle class="d-perilla perilla i-2" cx="312" cy="134" r="8"/>
+
+        <rect class="d-fila" x="20" y="166" width="320" height="44" rx="12"/>
+        <text class="d-tinta" x="38" y="193">Devoluciones</text>
+        <rect class="d-pista" x="278" y="176" width="46" height="24" rx="12" stroke-width="1.5"/>
+        <circle class="d-perilla-off" cx="290" cy="188" r="7"/>
+        <rect class="d-acento pista-on i-3" x="278" y="176" width="46" height="24" rx="12"/>
+        <circle class="d-perilla perilla i-3" cx="312" cy="188" r="8"/>
+
+        <rect class="d-acento-t" x="20" y="226" width="320" height="48" rx="24" stroke-width="1.5"/>
+        <text class="d-tinta d-neg" x="190" y="255" text-anchor="middle">Desliza para encender</text>
+        <g class="deslizador">
+          <circle class="d-acento" cx="316" cy="250" r="19"/>
+          <path class="d-sobre-t" d="M316 241v8M309.6 244.2a9 9 0 1 0 12.8 0"/>
+        </g>
+
+        <g class="activo">
+          <rect class="d-exito-b" x="110" y="290" width="140" height="28" rx="14"/>
+          <circle class="d-exito" cx="128" cy="304" r="4"/>
+          <text class="d-exito d-neg" x="139" y="308.5" font-size="12">Estás activo</text>
+        </g>
+      </svg>
     </div>
   </div>
 </section>
 
-<!-- «Así se ve» (#pantallas) vuelve cuando estén las capturas nuevas del Pixel
-     en assets/img/capturas/{turno,cola,pedido}-{360,720}.webp. Las de
-     docs/play/ de la app son de agosto y llevan el naranja retirado. -->
+<section class="seccion seccion--velo" id="como" aria-labelledby="como-t">
+  <div class="envoltura">
+    <div class="encabezado encabezado--centro revelar">
+      <span class="rotulo">Cuando entra un pedido</span>
+      <h2 id="como-t">Suena en tu bolsillo. Tú lo tomas.</h2>
+      <p>Aunque la pantalla esté apagada.</p>
+    </div>
+    <ol class="llamada">
+      <li class="revelar">
+        <svg viewBox="0 0 200 160" aria-hidden="true" focusable="false">
+          <g class="zumba">
+            <rect class="d-cuerpo" x="70" y="10" width="60" height="100" rx="11"/>
+            <rect class="d-acento" x="79" y="22" width="42" height="6" rx="3"/>
+            <rect class="d-linea" x="79" y="34" width="28" height="5" rx="2.5"/>
+            <rect class="d-linea" x="79" y="45" width="34" height="5" rx="2.5"/>
+          </g>
+          <path class="d-bolsillo" d="M34 62H166L158 146Q100 160 42 146Z"/>
+          <path class="d-costura" d="M44 73H156"/>
+          <g class="vibra">
+            <path class="d-acento-t" stroke-width="3" stroke-linecap="round" d="M58 20q-7 10 0 20M46 12q-12 18 0 36"/>
+            <path class="d-acento-t" stroke-width="3" stroke-linecap="round" d="M142 20q7 10 0 20M154 12q12 18 0 36"/>
+          </g>
+        </svg>
+        <h3>Suena</h3>
+        <p>El sistema te asigna el pedido y te llama, con lo que necesitas para empezar: qué es, el código y los bultos.</p>
+      </li>
+      <li class="revelar revelar--b">
+        <svg viewBox="0 0 200 160" aria-hidden="true" focusable="false">
+          <rect class="d-pantalla" x="36" y="4" width="128" height="152" rx="16"/>
+          <text class="d-suave d-neg" x="100" y="28" text-anchor="middle" font-size="10">ENTREGAR</text>
+          <text class="d-tinta d-grande" x="100" y="60" text-anchor="middle" font-size="26">K-42</text>
+          <rect class="d-linea" x="52" y="74" width="96" height="5" rx="2.5"/>
+          <rect class="d-suave cuenta" x="52" y="74" width="96" height="5" rx="2.5"/>
+          <text class="d-suave" x="100" y="97" text-anchor="middle" font-size="11">60 s</text>
+          <rect class="d-acento-t" x="48" y="110" width="104" height="32" rx="16" stroke-width="1.5"/>
+          <text class="d-tinta d-neg" x="110" y="130" text-anchor="middle" font-size="10">Yo lo entrego</text>
+          <circle class="d-acento toma" cx="64" cy="126" r="12"/>
+        </svg>
+        <h3>Deslizas para tomarlo</h3>
+        <p>Tienes 60 segundos. ¿No puedes? Toca «No puedo» y pasa a otro compañero.</p>
+      </li>
+      <li class="revelar revelar--c">
+        <svg viewBox="0 0 200 160" aria-hidden="true" focusable="false">
+          <rect class="d-pantalla" x="36" y="4" width="128" height="152" rx="16"/>
+          <circle class="d-exito-b" cx="100" cy="54" r="28"/>
+          <path class="d-exito-t tilde" stroke-width="4" d="M87 55l9 9 18-20"/>
+          <text class="d-exito d-neg" x="100" y="108" text-anchor="middle" font-size="13">Es tuya. ¡Dale!</text>
+          <text class="d-suave" x="100" y="130" text-anchor="middle" font-size="10">K-42 · 3 bultos</text>
+        </svg>
+        <h3>Es tuya</h3>
+        <p>La pantalla no se apaga con la tarea abierta, y si guardas el teléfono, sigue en la pantalla de bloqueo.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="seccion" id="turno" aria-labelledby="turno-t">
+  <div class="envoltura">
+    <div class="encabezado revelar">
+      <span class="rotulo">El turno</span>
+      <h2 id="turno-t">Enciéndete al llegar. Apágate al salir.</h2>
+      <p>Y si se te olvida, el turno se apaga solo.</p>
+    </div>
+    <ul class="relojes">
+      <li class="revelar">
+        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+          <rect class="d-acento tono-barra" x="8" y="58" width="10" height="22" rx="5"/>
+          <rect class="d-acento tono-barra tono-barra--2" x="22" y="44" width="10" height="36" rx="5"/>
+          <rect class="d-acento tono-barra tono-barra--3" x="36" y="28" width="10" height="52" rx="5"/>
+          <rect class="d-suave tono-barra tono-barra--3" x="54" y="28" width="10" height="52" rx="5"/>
+          <rect class="d-suave tono-barra tono-barra--2" x="68" y="44" width="10" height="36" rx="5"/>
+          <rect class="d-suave tono-barra" x="82" y="58" width="10" height="22" rx="5"/>
+          <path class="d-trazo" stroke-width="1.5" d="M6 88H94"/>
+        </svg>
+        <b>Un tono que sube, otro que baja</b>
+        <span>Al encender y al apagar. El de apagar suena también si el turno lo cerró el sistema.</span>
+      </li>
+      <li class="revelar revelar--b">
+        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+          <circle class="dial-pista" cx="50" cy="50" r="40" stroke-width="8"/>
+          <rect class="d-acento" x="37" y="34" width="9" height="32" rx="4.5"/>
+          <rect class="d-acento" x="54" y="34" width="9" height="32" rx="4.5"/>
+        </svg>
+        <b>Pausa de 5, 10 o 15 min</b>
+        <span>No te llega trabajo nuevo, pero no cierras tu turno ni sueltas lo que empezaste.</span>
+      </li>
+      <li class="revelar revelar--c">
+        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+          <circle class="dial-pista" cx="50" cy="50" r="40" stroke-width="8"/>
+          <circle class="dial-arco dial-20" cx="50" cy="50" r="40" stroke-width="8" stroke-dasharray="83.8 251.4" transform="rotate(-90 50 50)"/>
+          <text class="d-tinta d-grande" x="50" y="56" text-anchor="middle" font-size="20">20</text>
+          <text class="d-suave" x="50" y="71" text-anchor="middle" font-size="10">min</text>
+        </svg>
+        <b>20 min sin conexión</b>
+        <span>Dejas de recibir trabajo nuevo. Tu turno sigue abierto.</span>
+      </li>
+      <li class="revelar revelar--d">
+        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+          <circle class="dial-pista" cx="50" cy="50" r="40" stroke-width="8"/>
+          <circle class="dial-arco dial-60" cx="50" cy="50" r="40" stroke-width="8" stroke-dasharray="251.4 251.4" transform="rotate(-90 50 50)"/>
+          <circle class="dial-pista" cx="50" cy="50" r="28" stroke-width="6"/>
+          <circle class="dial-arco dial-30" cx="50" cy="50" r="28" stroke-width="6" stroke-dasharray="88 176" transform="rotate(-90 50 50)"/>
+          <text class="d-tinta d-grande" x="50" y="55" text-anchor="middle" font-size="17">90</text>
+          <text class="d-suave" x="50" y="67" text-anchor="middle" font-size="9">min</text>
+        </svg>
+        <b>90 min sin usar la app</b>
+        <span>El turno se cierra solo. También se apaga al cierre de la tienda.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="seccion seccion--velo" id="pantallas" aria-labelledby="pantallas-t">
+  <div class="envoltura">
+    <div class="encabezado encabezado--centro revelar">
+      <span class="rotulo">Pantalla por pantalla</span>
+      <h2 id="pantallas-t">Así se ve un turno.</h2>
+      <p>Capturas reales de la app, con una cuenta de prueba.</p>
+    </div>
+    <ul class="capturas revelar">
+      <li class="captura">
+        <figure class="telefono">
+          <picture>
+            <source type="image/webp" srcset="/assets/img/capturas/entrar-360.webp 360w, /assets/img/capturas/entrar-720.webp 720w, /assets/img/capturas/entrar-1068.webp 1068w" sizes="(min-width: 900px) 272px, 68vw">
+            <img src="/assets/img/capturas/entrar.png" width="1068" height="2294" loading="lazy" decoding="async" alt="Pantalla de entrada de GUUAO Work: los campos Servidor, Correo electrónico y Contraseña, y el botón Entrar.">
+          </picture>
+        </figure>
+        <h3>Entras una vez</h3>
+        <p>Después, con tu PIN o tu huella.</p>
+      </li>
+      <li class="captura">
+        <figure class="telefono">
+          <picture>
+            <source type="image/webp" srcset="/assets/img/capturas/silencio-360.webp 360w, /assets/img/capturas/silencio-720.webp 720w, /assets/img/capturas/silencio-1068.webp 1068w" sizes="(min-width: 900px) 272px, 68vw">
+            <img src="/assets/img/capturas/silencio.png" width="1068" height="2294" loading="lazy" decoding="async" alt="Pantalla de GUUAO Work con el aviso «Tu teléfono está en silencio» y el botón para abrir el sonido del teléfono.">
+          </picture>
+        </figure>
+        <h3>Te avisa si no la vas a oír</h3>
+        <p>Si el teléfono está en silencio, te lleva a arreglarlo.</p>
+      </li>
+      <li class="captura">
+        <figure class="telefono">
+          <picture>
+            <source type="image/webp" srcset="/assets/img/capturas/tienda-360.webp 360w, /assets/img/capturas/tienda-720.webp 720w, /assets/img/capturas/tienda-1068.webp 1068w" sizes="(min-width: 900px) 272px, 68vw">
+            <img src="/assets/img/capturas/tienda.png" width="1068" height="2294" loading="lazy" decoding="async" alt="Pantalla de GUUAO Work para elegir la tienda y encender Pedidos, Entregas y Devoluciones, con el control «Desliza para encender».">
+          </picture>
+        </figure>
+        <h3>Eliges tienda y tareas</h3>
+        <p>Y deslizas para encender.</p>
+      </li>
+      <li class="captura">
+        <figure class="telefono">
+          <picture>
+            <source type="image/webp" srcset="/assets/img/capturas/turno-360.webp 360w, /assets/img/capturas/turno-720.webp 720w, /assets/img/capturas/turno-1068.webp 1068w" sizes="(min-width: 900px) 272px, 68vw">
+            <img src="/assets/img/capturas/turno.png" width="1068" height="2294" loading="lazy" decoding="async" alt="Pantalla de turno activo de GUUAO Work: la tienda, la hora de cierre, la pausa de 5, 10 o 15 minutos y el trabajo pendiente.">
+          </picture>
+        </figure>
+        <h3>Tu turno, a la vista</h3>
+        <p>La pausa y lo que queda por hacer.</p>
+      </li>
+      <li class="captura">
+        <figure class="telefono">
+          <picture>
+            <source type="image/webp" srcset="/assets/img/capturas/es-tuya-360.webp 360w, /assets/img/capturas/es-tuya-720.webp 720w, /assets/img/capturas/es-tuya-1068.webp 1068w" sizes="(min-width: 900px) 272px, 68vw">
+            <img src="/assets/img/capturas/es-tuya.png" width="1068" height="2294" loading="lazy" decoding="async" alt="Pantalla de GUUAO Work con la tarea tomada: «Es tuya. ¡Dale!», el código K-42, tres bultos y el botón Terminé. Es una llamada de prueba.">
+          </picture>
+        </figure>
+        <h3>Es tuya</h3>
+        <p>El código, los bultos y el rack.</p>
+      </li>
+      <li class="captura">
+        <figure class="telefono">
+          <picture>
+            <source type="image/webp" srcset="/assets/img/capturas/ajustes-360.webp 360w, /assets/img/capturas/ajustes-720.webp 720w, /assets/img/capturas/ajustes-1068.webp 1068w" sizes="(min-width: 900px) 272px, 68vw">
+            <img src="/assets/img/capturas/ajustes.png" width="1068" height="2294" loading="lazy" decoding="async" alt="Pantalla de ajustes de GUUAO Work: probar una llamada, vibrar y sonar al trabajar, el flash en la llamada y el tema oscuro o claro.">
+          </picture>
+        </figure>
+        <h3>Que suene y se sienta</h3>
+        <p>Prueba la llamada, la vibración y el tema.</p>
+      </li>
+    </ul>
+  </div>
+</section>
 
 <section class="seccion" id="tu-telefono" aria-labelledby="tu-telefono-t">
   <div class="envoltura">
-    <h2 id="tu-telefono-t">Es tu teléfono, y se nota.</h2>
-    <p class="seccion__bajada">La app corre en tu teléfono personal, no en uno de la empresa. Por eso gasta lo mínimo y solo trabaja mientras tú trabajas.</p>
-    <div class="reja">
-      <article class="tarjeta">
-        <svg class="tarjeta__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v8"/><path d="M6.3 7.2a8 8 0 1 0 11.4 0"/></svg>
-        <h3>Apagado, no suena</h3>
-        <p>Sin turno activo no llega ni una notificación. Si te olvidas de apagarte, el turno se cierra solo.</p>
-      </article>
-      <article class="tarjeta">
-        <svg class="tarjeta__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
-        <h3>Ubicación solo en turno</h3>
-        <p>Se usa al encenderte, al apagarte y mientras estás de turno. Fuera de turno, nunca. Nunca en segundo plano.</p>
-      </article>
-      <article class="tarjeta">
-        <svg class="tarjeta__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 11v2"/><path d="M7 10v4"/></svg>
-        <h3>Cuida tu batería</h3>
-        <p>La pantalla se mantiene encendida solo con una tarea abierta, no durante todo el turno. Tema oscuro por defecto.</p>
-      </article>
-      <article class="tarjeta">
-        <svg class="tarjeta__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-        <h3>Tu PIN no sale del teléfono</h3>
-        <p>Entras una vez con tu correo. Después abres con PIN o huella, un cerrojo que vive solo en tu teléfono.</p>
-      </article>
+    <div class="encabezado encabezado--centro revelar">
+      <span class="rotulo">Tu teléfono</span>
+      <h2 id="tu-telefono-t">Es tu teléfono, y se nota.</h2>
+      <p>La app corre en tu teléfono personal: gasta lo mínimo y solo trabaja mientras tú trabajas.</p>
     </div>
-    <p class="mas"><a href="/privacidad.html">Qué datos usa la app y para qué</a></p>
+    <div class="revelar">
+      <svg class="info info--ancha" viewBox="0 0 360 150" role="img" aria-labelledby="dia-t dia-d">
+        <title id="dia-t">La ubicación, solo durante el turno</title>
+        <desc id="dia-d">Una línea con las 24 horas del día. Solo el tramo del turno, entre la entrada y la salida, usa la ubicación; antes y después, nunca.</desc>
+        <rect class="d-linea" x="20" y="70" width="320" height="18" rx="9"/>
+        <rect class="d-exito-b dia-turno" x="127" y="70" width="120" height="18" rx="9"/>
+        <g class="dia-pin">
+          <path class="d-acento" d="M127 68c-9-10-12-15-12-21a12 12 0 0 1 24 0c0 6-3 11-12 21z"/>
+          <circle class="d-sobre" cx="127" cy="47" r="4"/>
+          <text class="d-tinta d-neg" x="127" y="22" text-anchor="middle" font-size="12">Entras</text>
+        </g>
+        <g class="dia-pin dia-pin--salida">
+          <path class="d-acento" d="M247 68c-9-10-12-15-12-21a12 12 0 0 1 24 0c0 6-3 11-12 21z"/>
+          <circle class="d-sobre" cx="247" cy="47" r="4"/>
+          <text class="d-tinta d-neg" x="247" y="22" text-anchor="middle" font-size="12">Sales</text>
+        </g>
+        <text class="d-suave" x="73" y="110" text-anchor="middle" font-size="12">Nunca</text>
+        <text class="d-exito d-neg dia-rotulo" x="187" y="110" text-anchor="middle" font-size="12">En turno</text>
+        <text class="d-suave" x="293" y="110" text-anchor="middle" font-size="12">Nunca</text>
+        <text class="d-suave" x="20" y="140" font-size="11">00:00</text>
+        <text class="d-suave" x="180" y="140" text-anchor="middle" font-size="11">12:00</text>
+        <text class="d-suave" x="340" y="140" text-anchor="end" font-size="11">24:00</text>
+      </svg>
+    </div>
+    <ul class="mosaico">
+      <li class="revelar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v8"/><path d="M6.3 7.2a8 8 0 1 0 11.4 0"/></svg>
+        <h3>Apagado, no suena</h3>
+        <p>Sin turno activo no llega ni una notificación.</p>
+      </li>
+      <li class="revelar revelar--b">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
+        <h3>Ubicación solo en turno</h3>
+        <p>Nunca fuera de turno ni en segundo plano. Se borra a los 30 días.</p>
+      </li>
+      <li class="revelar revelar--c">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 11v2"/><path d="M7 10v4"/></svg>
+        <h3>Cuida tu batería</h3>
+        <p>La pantalla queda encendida solo con una tarea abierta. Tema oscuro por defecto.</p>
+      </li>
+      <li class="revelar revelar--d">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        <h3>Tu PIN no sale del teléfono</h3>
+        <p>Entras una vez con tu correo. Después, con PIN o huella.</p>
+      </li>
+    </ul>
+    <p class="mas centrado"><a href="/privacidad.html">Qué datos usa la app y para qué</a></p>
   </div>
 </section>
 
-<section class="seccion" id="entrar" aria-labelledby="entrar-t">
-  <div class="envoltura">
-    <h2 id="entrar-t">Cómo entrar.</h2>
-    <div class="nota">
-      <p><strong>No hay registro.</strong> GUUAO® Work es la app interna del personal de GUUAO. La cuenta te la da tu encargado de tienda. Si quieres comprar en GUUAO, la tuya es la app de clientes, en <a href="https://guuao.com/">guuao.com</a>.</p>
+<section class="seccion seccion--velo" id="entrar" aria-labelledby="entrar-t" data-menu="/">
+  <div class="envoltura reja--2">
+    <div class="revelar">
+      <span class="rotulo">Cómo entrar</span>
+      <h2 id="entrar-t">Tu cuenta te la da tu encargado.</h2>
+      <div class="nota">
+        <p><strong>No hay registro.</strong> GUUAO® Work es la app interna del personal de GUUAO. Si quieres comprar en GUUAO, la tuya es la app de clientes, en <a href="https://guuao.com/">guuao.com</a>.</p>
+      </div>
+      <ol class="pasos">
+        <li><strong>Pídele acceso a tu encargado.</strong> Te da de alta con tu correo y te habilita las tiendas y tareas que te tocan.</li>
+        <li><strong>Instala GUUAO® Work desde Google Play.</strong> Es para Android.</li>
+        <li><strong>Escribe el dominio, tu correo y tu contraseña.</strong> Solo la primera vez.</li>
+        <li><strong>Crea tu PIN</strong> o usa tu huella. Desde ahí, entras con eso.</li>
+      </ol>
     </div>
-    <ol class="pasos">
-      <li><strong>Pídele acceso a tu encargado.</strong> Te da de alta con tu correo y te habilita las tiendas y tareas que te tocan.</li>
-      <li><strong>Instala GUUAO® Work desde Google Play</strong> con el enlace que te comparte tu encargado. Es para Android.</li>
-      <li><strong>Escribe el dominio, tu correo y tu contraseña.</strong> Solo la primera vez.</li>
-      <li><strong>Crea tu PIN</strong> o usa tu huella. Desde ahí, entras con eso.</li>
-    </ol>
-    <p>¿Algo no funciona? Mira <a href="/soporte.html">Soporte</a>.</p>
+    <div class="descarga revelar revelar--b">
+      <img class="descarga__icono" src="/assets/img/icono-192.png" alt="" width="72" height="72">
+      <h3>GUUAO® Work en Google Play</h3>
+      <p>Cualquiera la puede instalar, pero sin una cuenta de GUUAO no hace nada.</p>
+      <div class="tiendas">
+        <a class="tienda" href="https://play.google.com/store/apps/details?id=com.leiros.guuaowork" target="_blank" rel="noopener">
+          <img src="/assets/img/tiendas/google-play.svg" alt="Descargar en Google Play" width="162" height="48">
+        </a>
+      </div>
+      <p class="mas"><a href="/docs/">Lee el manual</a> · <a href="/soporte.html">Soporte</a></p>
+    </div>
   </div>
 </section>
 </main>
@@ -153,7 +479,9 @@
         <ul>
           <li><a href="/">Inicio</a></li>
           <li><a href="/#entrar">Cómo entrar</a></li>
+          <li><a href="/docs/">Manual</a></li>
           <li><a href="/soporte.html">Soporte</a></li>
+          <li><a href="https://play.google.com/store/apps/details?id=com.leiros.guuaowork" target="_blank" rel="noopener">Google Play</a></li>
         </ul>
       </div>
       <div>
@@ -174,7 +502,8 @@
     </div>
     <div class="pie__legal">
       <p>&copy; 2026 GUUAO LLC. GUUAO® es una marca registrada.</p>
-      <p>La app del equipo de tienda de GUUAO. No es la app para comprar.</p>
+      <p>La app del equipo de tienda de GUUAO, para Android. No es la app para comprar.</p>
+      <p>Google Play y el logotipo de Google Play son marcas de Google LLC.</p>
     </div>
   </div>
 </footer>
