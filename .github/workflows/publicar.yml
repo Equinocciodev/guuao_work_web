@@ -41,6 +41,12 @@ jobs:
       - name: Chequeo del HTML y de los enlaces
         run: python3 tool/verificar.py
 
+      # El manual del operador (/docs/) tiene su propio chequeo: cabecera y
+      # pie iguales a los de la portada, el árbol del manual idéntico en las
+      # doce páginas, enlaces y anclas, CSP y cero recursos externos.
+      - name: Chequeo del manual
+        run: python3 tool/verificar_docs.py
+
       # Se sube una carpeta armada a mano y no el repositorio entero: así
       # `tool/`, `.github/`, `_headers` y el README no terminan servidos.
       - name: Armar la carpeta que se publica
@@ -48,6 +54,9 @@ jobs:
           mkdir -p _sitio
           cp -R assets _sitio/
           cp *.html robots.txt sitemap.xml favicon.svg site.webmanifest CNAME _sitio/
+          # El manual es una carpeta: sin esta línea se publica todo menos
+          # /docs/, y el «Manual» de la cabecera da 404 en las diecisiete.
+          cp -R docs _sitio/
           # Sin Jekyll: Pages lo correría por defecto y se comería lo que
           # empiece con guion bajo.
           touch _sitio/.nojekyll
@@ -57,7 +66,8 @@ jobs:
           done
           # Y lo que SÍ tiene que haber llegado: la política es la URL que
           # está cargada en Play y dentro de la app.
-          for f in index.html privacidad.html soporte.html terminos.html 404.html CNAME; do
+          for f in index.html privacidad.html soporte.html terminos.html 404.html CNAME \
+                   docs/index.html docs/turno.html docs/dudas.html; do
             if [ ! -f "_sitio/$f" ]; then echo "$f no llegó a _sitio"; exit 1; fi
           done
           ls -laR _sitio | head -60

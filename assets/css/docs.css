@@ -1,0 +1,292 @@
+/* GUUAO® Work — el MANUAL DEL OPERADOR (/docs/).
+
+   Se carga DESPUÉS de estilo.css y solo en las páginas de /docs/. Usa sus
+   tokens (--fondo, --superficie, --borde, --texto, --texto-2, --acento,
+   --acento-velo, --radio, --cabecera) y no redefine ninguno.
+
+   Maqueta copiada del manual de vendoo_web (ver su README, «El manual del
+   vendedor»): tres columnas, CERO JavaScript.
+
+       ┌────────┬──────────────────┬────────┐
+1260+  │ árbol  │  miga + título   │ en     │
+       │ del    ├──────────────────┤ esta   │
+       │ manual │  el contenido    │ página │
+       └────────┴──────────────────┴────────┘
+1000→1259: el árbol a la izquierda; «en esta página» baja al texto.
+< 1000: una columna, en el orden del HTML — cabeza, en esta página,
+        contenido, anterior/siguiente y al final todo el manual.
+
+   ⚠️ El área `aqui` va declarada en LOS TRES tramos: un elemento con
+   `grid-area` que la plantilla no nombra genera una columna implícita que le
+   come el ancho al texto (lección de vendoo, medida a 1024 px).
+
+   Colores del manual, de docs/MARCA.md de la app:
+   turquesa = cromo (enlaces, contornos, el paso activo), NUNCA estado;
+   verde = estado («listo, hecho»); rojo y ámbar = urgencia, y nada más.
+   El naranja de GUUAO no existe aquí. */
+
+:root {
+  --urgente: #EF4444;       /* rojo: atrasado, lo que no se puede equivocar */
+  --por-caer: #F59E0B;      /* ámbar: por caer, ojo con esto */
+  --listo: #22C55E;         /* verde: estado, hecho */
+}
+:root[data-tema="claro"] {
+  --urgente: #B91C1C;
+  --por-caer: #B45309;
+  --listo: #15803D;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-tema="oscuro"]) {
+    --urgente: #B91C1C;
+    --por-caer: #B45309;
+    --listo: #15803D;
+  }
+}
+
+/* ---------- La reja ---------- */
+
+.envoltura--manual { max-width: 1360px; }
+.seccion--manual { padding: clamp(28px, 4vw, 52px) 0 56px; border-top: 0; }
+
+.manual {
+  display: grid;
+  gap: 0 clamp(26px, 3vw, 46px);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "cabeza" "aqui" "cuerpo" "arbol";
+}
+.manual__cabeza { grid-area: cabeza; min-width: 0; }
+.manual__aqui   { grid-area: aqui; min-width: 0; }
+.manual__cuerpo { grid-area: cuerpo; min-width: 0; }
+.manual__arbol  { grid-area: arbol; min-width: 0; }
+
+@media (min-width: 1000px) {
+  .manual { grid-template-columns: 15rem minmax(0, 1fr); grid-template-areas: "arbol cabeza" "arbol aqui" "arbol cuerpo"; }
+  .manual__arbol {
+    position: sticky; top: calc(var(--cabecera) + 20px); align-self: start;
+    max-height: calc(100vh - var(--cabecera) - 40px); overflow-y: auto; padding-inline: 4px;
+  }
+}
+@media (min-width: 1260px) {
+  .manual { grid-template-columns: 15rem minmax(0, 1fr) 14rem; grid-template-areas: "arbol cabeza aqui" "arbol cuerpo aqui"; }
+  .manual__aqui {
+    position: sticky; top: calc(var(--cabecera) + 20px); align-self: start;
+    max-height: calc(100vh - var(--cabecera) - 40px); overflow-y: auto; padding-inline: 4px;
+  }
+}
+
+/* ---------- Los carriles ---------- */
+
+/* El relleno lateral NO es aire: los carriles son contenedores de
+   desplazamiento y recortan en su borde (la «T» de «TODO EL MANUAL» salía
+   partida en vendoo). */
+.carril__rotulo {
+  display: block; font-size: .72rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--texto-2); margin: 0 0 10px; padding-inline: 12px;
+}
+.manual__aqui .carril__rotulo { padding-inline: 14px; }
+
+/* El número corre de 1 a 12 por encima de los grupos: así se nombran entre
+   compañeros («mira la 5»). */
+.arbol { list-style: none; margin: 0; padding: 0; counter-reset: cap; }
+.arbol li { margin: 0; }
+.arbol li:not(.arbol__grupo) { counter-increment: cap; }
+.arbol__grupo {
+  font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--texto-2);
+  padding: 0 10px 5px 12px; margin-top: 16px;
+}
+.arbol li:first-child.arbol__grupo { margin-top: 0; }
+.arbol a {
+  display: grid; grid-template-columns: 1.7em 1fr; align-items: baseline;
+  gap: 2px; padding: 8px 10px; border-radius: 9px;
+  color: var(--texto-2); text-decoration: none;
+  font-size: .92rem; line-height: 1.35;
+  border-left: 2px solid transparent;
+}
+.arbol a::before { content: counter(cap); font-variant-numeric: tabular-nums; font-size: .8rem; opacity: .75; }
+.arbol a:hover { color: var(--texto); background: var(--acento-velo); }
+/* La sección que se lee: el color no es la única señal (peso + barra). */
+.arbol a[aria-current="page"] {
+  color: var(--texto); font-weight: 600;
+  background: var(--acento-velo); border-left-color: var(--acento);
+}
+
+.aqui { list-style: none; margin: 0; padding: 0; }
+.aqui li { margin: 0; }
+.aqui a {
+  display: block; padding: 6px 0 6px 12px;
+  border-left: 2px solid var(--borde);
+  color: var(--texto-2); text-decoration: none;
+  font-size: .88rem; line-height: 1.4;
+}
+.aqui a:hover { color: var(--acento); border-left-color: var(--acento); }
+
+.manual__aqui {
+  border: 1.3px solid var(--borde); border-radius: var(--radio);
+  background: var(--superficie); padding: 16px 18px; margin-bottom: 30px;
+}
+@media (min-width: 1260px) {
+  .manual__aqui { border: 0; background: none; padding: 0; margin-bottom: 0; }
+}
+.manual__arbol {
+  border: 1.3px solid var(--borde); border-radius: var(--radio);
+  background: var(--superficie); padding: 16px 12px; margin-top: 40px;
+}
+@media (min-width: 1000px) {
+  .manual__arbol { border: 0; background: none; padding: 0; margin-top: 0; }
+}
+
+/* ---------- Miga y cabeza ---------- */
+
+.miga { font-size: .85rem; color: var(--texto-2); margin: 0 0 14px; }
+.miga ol { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.miga li + li::before { content: "›"; margin-right: 6px; color: var(--texto-2); }
+.miga a { color: var(--texto-2); text-decoration: none; }
+.miga a:hover { color: var(--acento); text-decoration: underline; }
+.miga [aria-current="page"] { color: var(--texto); }
+
+.manual__cabeza { max-width: 72ch; margin-bottom: 28px; }
+.manual__cabeza h1 { font-size: clamp(1.8rem, 1.3rem + 2vw, 2.6rem); margin-bottom: .3em; }
+.manual__entrada { color: var(--texto-2); font-size: 1.05rem; margin-bottom: 0; }
+
+/* ---------- El cuerpo ---------- */
+
+.manual__cuerpo { max-width: 72ch; }
+.manual__cuerpo > :first-child { margin-top: 0; }
+.manual__cuerpo h2 { font-size: 1.36rem; margin-top: 2.1em; }
+.manual__cuerpo h3 { font-size: 1.04rem; margin-top: 1.7em; }
+.manual__cuerpo ul, .manual__cuerpo ol { padding-left: 1.25em; margin: 0 0 1.05em; }
+.manual__cuerpo li { margin-bottom: .45em; }
+.manual__cuerpo li::marker { color: var(--acento); }
+
+/* Lo que dice la pantalla, tal cual. Sin comillas tipográficas en el HTML
+   de cada botón: el estilo lo marca. */
+.boton-app {
+  display: inline; font-weight: 600; color: var(--texto);
+  background: var(--superficie-2); border: 1px solid var(--borde);
+  border-radius: 7px; padding: 0 .35em; white-space: nowrap;
+}
+@media (max-width: 380px) { .boton-app { white-space: normal; } }
+
+/* ---------- Capturas ---------- */
+
+/* 264 px: una pantalla de teléfono dentro de la columna de texto. */
+.manual-fig { margin: 26px 0; max-width: 264px; }
+.manual-fig__marco {
+  border: 1.3px solid var(--borde); border-radius: 22px; padding: 6px;
+  background: var(--superficie); margin-bottom: 10px;
+}
+.manual-fig img { width: 100%; height: auto; border-radius: 16px; background: var(--fondo); }
+.manual-fig figcaption { color: var(--texto-2); font-size: .86rem; line-height: 1.45; }
+
+/* Dos capturas lado a lado cuando cuentan un antes y un después. */
+.manual-par { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 540px; margin: 26px 0; }
+.manual-par .manual-fig { margin: 0; max-width: none; }
+
+/* Esquemas dibujados (donde no hay captura). Son dibujos, no pantallas:
+   por eso no llevan marco de teléfono. */
+.esquema { margin: 26px 0; max-width: 520px; }
+.esquema svg { width: 100%; height: auto; }
+.esquema figcaption { color: var(--texto-2); font-size: .86rem; line-height: 1.45; margin-top: 8px; }
+.esquema .e-caja { fill: var(--superficie); stroke: var(--borde); stroke-width: 1.5; }
+.esquema .e-cromo { fill: none; stroke: var(--acento); stroke-width: 2; }
+.esquema .e-texto { fill: var(--texto); font: 600 13px Poppins, system-ui, sans-serif; }
+.esquema .e-suave { fill: var(--texto-2); font: 400 11.5px Poppins, system-ui, sans-serif; }
+.esquema .e-linea { stroke: var(--texto-2); stroke-width: 1.5; fill: none; }
+.esquema .e-listo { fill: none; stroke: var(--listo); stroke-width: 2; }
+.esquema .e-urgente { fill: none; stroke: var(--urgente); stroke-width: 2; }
+.esquema .e-flecha { fill: var(--texto-2); }
+
+/* ---------- Pasos ---------- */
+
+.manual-pasos { list-style: none; margin: 0 0 1.4em; padding: 0; counter-reset: mpaso; }
+.manual__cuerpo .manual-pasos { padding-left: 0; }
+.manual-pasos > li { counter-increment: mpaso; position: relative; padding: 0 0 16px 42px; margin: 0; }
+.manual-pasos > li::before {
+  content: counter(mpaso); position: absolute; left: 0; top: 1px;
+  width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  border: 1.3px solid var(--acento); color: var(--acento);
+  font-size: .85rem; font-weight: 700;
+}
+.manual-pasos b { display: block; font-weight: 600; margin-bottom: 2px; }
+.manual-pasos p { margin: 0; color: var(--texto-2); font-size: .95rem; }
+
+/* ---------- Avisos ---------- */
+
+/* `.nota` (turquesa) explica; `.nota--aviso` (ámbar) previene;
+   `.nota--clave` (rojo) es lo que no se puede equivocar; `.nota--listo`
+   (verde) dice cómo saber que salió bien. El rótulo va SIEMPRE: el color no
+   puede ser la única señal. Los cálidos quedan para advertir, que es para lo
+   que la marca los reserva. */
+.manual__cuerpo .nota { margin: 22px 0; }
+.nota__rotulo {
+  display: block; font-size: .72rem; font-weight: 700;
+  letter-spacing: .11em; text-transform: uppercase;
+  color: var(--acento); margin-bottom: 6px;
+}
+.nota--aviso, .nota--clave, .nota--listo {
+  background: var(--superficie); border: 1.3px solid var(--borde); border-radius: 0 12px 12px 0;
+}
+.nota--aviso { border-left: 3px solid var(--por-caer); }
+.nota--aviso .nota__rotulo { color: var(--por-caer); }
+.nota--clave { border-left: 3px solid var(--urgente); }
+.nota--clave .nota__rotulo { color: var(--urgente); }
+.nota--listo { border-left: 3px solid var(--listo); }
+.nota--listo .nota__rotulo { color: var(--listo); }
+.nota ul, .nota ol { padding-left: 1.2em; margin: .6em 0 0; }
+.nota li { margin-bottom: .35em; }
+.nota li:last-child { margin-bottom: 0; }
+
+/* ---------- Tabla ---------- */
+
+/* Se desplaza la tabla, nunca la página. */
+.manual-tabla { overflow-x: auto; margin: 0 0 1.4em; }
+.manual-tabla table { border-collapse: collapse; width: 100%; min-width: 300px; font-size: .92rem; }
+.manual-tabla th, .manual-tabla td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--borde); }
+.manual-tabla th { font-weight: 600; font-size: .8rem; letter-spacing: .05em; text-transform: uppercase; color: var(--texto-2); }
+.manual-tabla tbody tr:last-child td { border-bottom: 0; }
+
+/* ---------- Preguntas ---------- */
+
+.pregunta { border-top: 1px solid var(--borde); padding: 18px 0; }
+.pregunta:first-of-type { border-top: 0; padding-top: 0; }
+.manual__cuerpo .pregunta h2 { font-size: 1.04rem; margin: 0 0 .4em; }
+.pregunta p { color: var(--texto-2); font-size: .95rem; margin: 0 0 .5em; }
+.pregunta p:last-child { margin-bottom: 0; }
+
+/* ---------- Anterior / siguiente ---------- */
+
+.saltos { display: grid; gap: 12px; margin-top: 46px; padding-top: 26px; border-top: 1px solid var(--borde); }
+@media (min-width: 620px) { .saltos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.salto {
+  display: block; padding: 14px 18px; text-decoration: none;
+  border: 1.3px solid var(--borde); border-radius: var(--radio);
+  background: var(--superficie); color: var(--texto);
+}
+.salto:hover { border-color: var(--acento); }
+.salto span { display: block; font-size: .74rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-2); margin-bottom: 3px; }
+.salto b { font-weight: 600; font-size: .98rem; }
+.salto--sig { text-align: right; }
+@media (min-width: 620px) { .salto--sig:only-child { grid-column: 2; } }
+
+/* ---------- Portada del manual ---------- */
+
+.manual-indice { display: grid; gap: 12px; margin: 0 0 26px; padding: 0; list-style: none; }
+.manual__cuerpo .manual-indice { padding-left: 0; }
+.manual__cuerpo .manual-indice li { margin: 0; }
+.manual__cuerpo h3.manual-grupo { font-size: .76rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; color: var(--texto-2); margin: 26px 0 10px; }
+@media (min-width: 620px) { .manual-indice { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.manual-indice a {
+  display: block; height: 100%; padding: 15px 18px; text-decoration: none;
+  border: 1.3px solid var(--borde); border-radius: var(--radio);
+  background: var(--superficie); color: var(--texto);
+}
+.manual-indice a:hover { border-color: var(--acento); }
+.manual-indice b { display: block; font-weight: 600; font-size: .98rem; margin-bottom: 2px; }
+.manual-indice span { color: var(--texto-2); font-size: .88rem; line-height: 1.45; }
+
+@media print {
+  .manual__arbol, .manual__aqui, .saltos, .cabecera, .pie { display: none; }
+  .manual { display: block; }
+}
