@@ -134,7 +134,9 @@
       <tr><th scope="row">Nombre, teléfono y dirección de entrega</th><td>Entregar el pedido a la persona correcta. Estos datos los carga GUUAO desde el pedido; la app solo los muestra.</td></tr>
       <tr><th scope="row">Mensajes y fotos del chat del pedido</th><td>Comunicarse con el cliente sobre ese pedido, por ejemplo para avisar un reemplazo. El chat queda ligado al pedido.</td></tr>
       <tr><th scope="row">Foto de prueba de entrega</th><td>Dejar constancia de que el pedido se entregó completo y a quien correspondía.</td></tr>
-      <tr><th scope="row">Foto de la cédula de identidad, solo en pedidos con licor</th><td>Respaldar que el operador verificó, al entregar, que quien recibe es <strong>mayor de edad</strong>. No se usa para ningún otro fin.</td></tr>
+      <tr><th scope="row">Foto de la cédula de identidad, solo en pedidos con licor</th><td>Respaldar que el operador verificó, al entregar, que quien recibe es <strong>mayor de edad</strong>. No se usa para ningún otro fin, y <strong>solo la puede ver el encargado de esa tienda</strong>.</td></tr>
+      <tr><th scope="row">Foto de la cédula de quien trae una devolución</th><td>Respaldar quién entregó en el mostrador el producto devuelto. Misma regla que la anterior: solo la ve el encargado de esa tienda.</td></tr>
+      <tr><th scope="row">Cobro contra entrega: monto, forma de pago, referencia y foto del comprobante del datáfono</th><td>Cuando el pedido se paga al recibirlo, el repartidor registra que cobró. Si fue con tarjeta, fotografía el comprobante del datáfono. <strong>La app no procesa pagos</strong>: solo deja constancia del cobro. El monto lo calcula el servidor de GUUAO, nunca el teléfono.</td></tr>
       <tr><th scope="row">Registro de la verificación de edad</th><td>Quién la hizo, cuándo, para qué pedido y <strong>dónde</strong> (en el mostrador o en la puerta del cliente). Cumple la política de venta responsable de alcohol de GUUAO.</td></tr>
     </tbody>
   </table>
@@ -161,7 +163,9 @@
   <ul>
     <li><strong>Ubicación del turno:</strong> se borra automáticamente a los <strong>30 días</strong>. Después solo queda un contador: cuántas veces se midió y cuántas dentro de la tienda, no dónde estuvo el operador.</li>
     <li><strong>Recorrido de reparto:</strong> misma regla, <strong>30 días</strong> y se borra solo.</li>
-    <li><strong>Mensajes, fotos del chat, foto de prueba de entrega y foto de cédula:</strong> se conservan con el pedido mientras la ley obligue a guardar el respaldo fiscal y operativo de ese pedido.</li>
+    <li><strong>Foto de la cédula</strong> (entregas con licor y devoluciones): la imagen <strong>se borra a los 90 días</strong>. Queda el registro de que se verificó, quién lo hizo y cuándo, pero ya no el documento.</li>
+    <li><strong>Mensajes, fotos del chat y foto de prueba de entrega:</strong> se conservan con el pedido mientras la ley obligue a guardar el respaldo fiscal y operativo de ese pedido.</li>
+    <li><strong>Registro del cobro y foto del comprobante del datáfono:</strong> son comprobantes contables y se conservan el tiempo que exige la ley venezolana para ellos.</li>
     <li><strong>Registro de verificación de edad:</strong> mientras exista la obligación legal de conservarlo.</li>
     <li><strong>Registro de operaciones:</strong> con el pedido, por la misma razón.</li>
     <li><strong>Reportes de fallos:</strong> según el plazo configurado en el proveedor, que no supera los <strong>90 días</strong>.</li>
@@ -170,7 +174,7 @@
   </ul>
 
   <h2 id="c6">6. Con quién se comparten</h2>
-  <p>Dentro de GUUAO, el acceso se limita a quien lo necesita para su función: el operador que atiende el pedido, el encargado de esa tienda y el equipo de soporte si hay un reclamo o una devolución.</p>
+  <p>Dentro de GUUAO, el acceso se limita a quien lo necesita para su función: el operador que atiende el pedido, el encargado de esa tienda y el equipo de soporte si hay un reclamo o una devolución. Las fotos de cédula son más restringidas: <strong>solo las ve el encargado de la tienda</strong>, y cada vez que alguien las abre queda registrado.</p>
   <p>Para funcionar, la app usa estos <strong>proveedores</strong>. Tratan los datos por cuenta de GUUAO y no para fines propios:</p>
   <ul>
     <li><strong>Google LLC — Firebase Cloud Messaging:</strong> entrega las notificaciones de trabajo. Recibe el identificador de notificaciones del teléfono y el aviso.</li>
