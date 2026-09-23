@@ -2,7 +2,7 @@
 <html lang="es-VE">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/b8tLwtLEebYdFwXHSokyqVvhibOvCcncQIsgqf0Yw4='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/b8tLwtLEebYdFwXHSokyqVvhibOvCcncQIsgqf0Yw4=' https://www.gstatic.com https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://*.google-analytics.com https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Política de privacidad — GUUAO Work</title>
 <meta name="description" content="Qué datos recoge GUUAO Work, la app del equipo de tienda de GUUAO: para qué, dónde se guardan, cuánto tiempo y cómo pedir que se eliminen.">
@@ -25,6 +25,9 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/poppins-700.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/poppins-400.woff2" crossorigin>
+<!-- Solo la resolución de DNS: la analítica carga después de `load`. -->
+<link rel="dns-prefetch" href="https://www.gstatic.com">
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/assets/css/estilo.css">
 <!-- Lo único que corre antes del primer pintado: el tema elegido (si
      esperara a sitio.js, que va con defer, la página parpadearía) y la marca
@@ -32,6 +35,9 @@
      CSP de arriba: si lo tocas, tool/verificar.py te dice el nuevo. -->
 <script>try{var t=localStorage.getItem('guuao-work-tema');if(t==='claro'||t==='oscuro'){document.documentElement.setAttribute('data-tema',t);}}catch(e){}document.documentElement.setAttribute('data-js','1');</script>
 <script src="/assets/js/sitio.js" defer></script>
+<!-- Analítica (GA4 por Firebase), decisión del dueño del 23-sep-2026. Lo
+     único externo del sitio; explicado en assets/js/analitica.js. -->
+<script type="module" src="/assets/js/analitica.js"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -174,6 +180,7 @@
   </ul>
   <p>Algunos de estos proveedores procesan datos fuera de Venezuela, principalmente en los Estados Unidos.</p>
   <p>Fuera de eso, los datos solo se entregan a terceros cuando lo exija una autoridad competente conforme a la ley.</p>
+  <p><strong>El sitio web.</strong> Esta política habla de la app. El sitio <strong>work.guuao.com</strong>, desde el que probablemente la estás leyendo, usa <strong>Google Analytics</strong> (a través de Firebase, de Google LLC) para contar cuántas visitas recibe y qué páginas se leen. Es una medición de audiencia y nada más: el sitio no muestra publicidad, tiene apagadas las señales publicitarias de Google y no guarda por su cuenta ningún dato personal.</p>
 
   <h2 id="c7">7. Acceso, corrección y eliminación</h2>
   <p>Cualquier persona cuyos datos pasen por GUUAO® Work, sea operador o cliente, puede pedir <strong>ver</strong>, <strong>corregir</strong> o <strong>eliminar</strong> sus datos. Para eso, escribe a <a href="mailto:contacto@guuao.com?subject=Solicitud%20de%20datos%20%E2%80%94%20GUUAO%20Work">contacto@guuao.com</a> con el asunto <em>Solicitud de datos — GUUAO Work</em> y los datos necesarios para identificarte. El operador también puede pedírselo a su encargado de tienda.</p>

@@ -9,10 +9,17 @@ pública, cargada en la consola **y** dentro de la app, y la ficha necesita una
 página de soporte con el canal para pedir la eliminación de datos. Sigue el
 molde de `../vendoo_web`, recortado a lo que una app interna necesita.
 
-**HTML, CSS y un poco de JavaScript. Sin framework, sin build, sin
-dependencias y sin analítica.** Lo que está en el repositorio es exactamente lo
-que se sirve. Por eso la CSP es `'self'` para todo, y cualquiera puede
-corregir una coma de la política sin instalar nada.
+**HTML, CSS y un poco de JavaScript. Sin framework, sin build y sin
+dependencias.** Lo que está en el repositorio es exactamente lo que se sirve, y
+cualquiera puede corregir una coma de la política sin instalar nada.
+
+**La única excepción: la analítica** (23-sep-2026, igual que vendoo_web). GA4
+por Firebase, proyecto `guuaoapp`, app web propia (`G-0YDZ03LJMK`), cargada
+después de `load` y con las señales publicitarias apagadas. Sus hosts de
+Google son lo único externo que abre la CSP; el detalle está en
+`assets/js/analitica.js`. Si se apaga, se sacan tres cosas juntas: el script,
+esos hosts de la CSP y la frase de «El sitio web» en la cláusula 6 de la
+política.
 
 ## Qué vende esta página — y qué no
 
@@ -36,6 +43,7 @@ robots.txt, sitemap.xml, site.webmanifest
 _headers          REFERENCIA: Pages no sirve cabeceras. No se publica.
 assets/css/estilo.css   Todo el estilo
 assets/js/sitio.js      Solo el botón del tema
+assets/js/analitica.js  GA4 por Firebase (ver arriba)
 assets/fonts/           Poppins 400/600/700, subconjunto latino (de vendoo_web)
 assets/img/             Íconos (de docs/play/icono_512.png de la app) y capturas/
 tool/verificar.py       El chequeo que corre en CI y en tu máquina
@@ -44,8 +52,9 @@ tool/verificar.py       El chequeo que corre en CI y en tu máquina
 
 ### ⚠️ Las URL no se mueven
 
-`/privacidad.html` es la URL cargada en Google Play y en la variable
-`GUUAO_PRIVACIDAD_URL` del repo de la app, que la hornea en «Acerca de».
+`/privacidad.html` es la URL cargada en Google Play y **fija** en
+`WorkConfig.privacyUrl` de la app, que la abre desde «Acerca de» (una prueba
+de la app falla si alguien la cambia allá).
 `/privacidad.html#c7` es el canal de eliminación de datos que se declara en el
 formulario de Seguridad de los datos. **Renombrar esos archivos o esos `id`
 rompe la declaración de Play en silencio.**

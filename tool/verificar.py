@@ -18,6 +18,7 @@ Sin dependencias: solo la biblioteca estándar. Revisa, en cada página:
 8. El sitemap lista exactamente las páginas indexables.
 9. El naranja de GUUAO (#E95019) no aparece en ningún lado (docs/MARCA.md
    de la app: en Work no existe).
+10. La analítica está en las cinco páginas (assets/js/analitica.js).
 """
 import base64
 import hashlib
@@ -189,7 +190,11 @@ def main():
         for tag, atr, valor, rel in lec.refs:
             urls = [x.strip().split(' ')[0] for x in valor.split(',')] if atr == 'srcset' else [valor]
             for url in urls:
-                es_recurso = tag != 'a' and not (tag == 'link' and rel == 'canonical')
+                # `canonical` y `dns-prefetch` no descargan nada: el primero
+                # es un nombre y el segundo solo resuelve el DNS de la
+                # analítica, que es la única excepción externa del sitio.
+                es_recurso = tag != 'a' and not (
+                    tag == 'link' and rel in ('canonical', 'dns-prefetch'))
                 d = destino_local(p, url)
                 if d is None:
                     if es_recurso:
@@ -210,6 +215,11 @@ def main():
             error(p, f'más de un aria-current: {lec.aria_current}')
         if lec.aria_current and lec.aria_current[0] != propio:
             error(p, f'aria-current en {lec.aria_current[0]}, no en la propia página')
+
+        # 10. La analítica: en las cinco páginas o en ninguna. Una página
+        # sin ella no se cuenta y el informe miente sin avisar.
+        if '<script type="module" src="/assets/js/analitica.js"></script>' not in texto:
+            error(p, 'falta la analítica (assets/js/analitica.js)')
 
         # 9. El naranja
         if re.search(r'#e95019', texto, re.I):

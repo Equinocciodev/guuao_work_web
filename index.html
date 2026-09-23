@@ -2,7 +2,7 @@
 <html lang="es-VE">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/b8tLwtLEebYdFwXHSokyqVvhibOvCcncQIsgqf0Yw4='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/b8tLwtLEebYdFwXHSokyqVvhibOvCcncQIsgqf0Yw4=' https://www.gstatic.com https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://*.google-analytics.com https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GUUAO Work — la app del equipo de tienda de GUUAO</title>
 <meta name="description" content="La app de los operadores de tienda de GUUAO: prepara pedidos, entrega y recibe devoluciones. Solo trabaja mientras estás de turno.">
@@ -25,6 +25,9 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/poppins-700.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/poppins-400.woff2" crossorigin>
+<!-- Solo la resolución de DNS: la analítica carga después de `load`. -->
+<link rel="dns-prefetch" href="https://www.gstatic.com">
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/assets/css/estilo.css">
 <!-- Lo único que corre antes del primer pintado: el tema elegido (si
      esperara a sitio.js, que va con defer, la página parpadearía) y la marca
@@ -32,6 +35,9 @@
      CSP de arriba: si lo tocas, tool/verificar.py te dice el nuevo. -->
 <script>try{var t=localStorage.getItem('guuao-work-tema');if(t==='claro'||t==='oscuro'){document.documentElement.setAttribute('data-tema',t);}}catch(e){}document.documentElement.setAttribute('data-js','1');</script>
 <script src="/assets/js/sitio.js" defer></script>
+<!-- Analítica (GA4 por Firebase), decisión del dueño del 23-sep-2026. Lo
+     único externo del sitio; explicado en assets/js/analitica.js. -->
+<script type="module" src="/assets/js/analitica.js"></script>
 </head>
 <body>
 <a class="saltar" href="#principal">Saltar al contenido</a>
