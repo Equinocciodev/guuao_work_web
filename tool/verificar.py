@@ -19,6 +19,8 @@ Sin dependencias: solo la biblioteca estándar. Revisa, en cada página:
 9. El naranja de GUUAO (#E95019) no aparece en ningún lado (docs/MARCA.md
    de la app: en Work no existe).
 10. La analítica está en las cinco páginas (assets/js/analitica.js).
+11. Cada CSS y JS enlazado lleva `?v=` con la huella AL DÍA de su contenido
+    (tool/versionar.py la pone; sin ella, Cloudflare cachea un año).
 11. Ningún atributo `style=` (la CSP dice `style-src 'self'` y el navegador
     lo ignoraría en silencio).
 12. Todo enlace a Google Play nombra el MISMO paquete (com.leiros.guuaowork):
@@ -49,6 +51,23 @@ VACIAS = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'm
 # entrega como startendtag y no hace falta listarlos.
 
 errores = []
+
+HUELLA = re.compile(r'(?:href|src)="(/assets/(?:css|js)/[^"?]+\.(?:css|js))(?:\?v=([0-9a-f]*))?"')
+
+
+def revisar_huellas(pagina, texto):
+    """Los problemas de huella de una página: CSS/JS sin `?v=` o con una
+    que ya no coincide con el archivo. Lo usa también verificar_docs.py."""
+    problemas = []
+    for ruta, v in HUELLA.findall(texto):
+        archivo = RAIZ / ruta.lstrip('/')
+        if not archivo.exists():
+            continue  # el enlace roto ya lo reporta la regla 5
+        actual = hashlib.sha256(archivo.read_bytes()).hexdigest()[:10]
+        if v != actual:
+            problemas.append('%s con huella %s, y el archivo es %s: corre tool/versionar.py'
+                             % (ruta, v or '(ninguna)', actual))
+    return problemas
 
 
 def error(pagina, msg):
@@ -243,8 +262,14 @@ def main():
 
         # 10. La analítica: en las cinco páginas o en ninguna. Una página
         # sin ella no se cuenta y el informe miente sin avisar.
-        if '<script type="module" src="/assets/js/analitica.js"></script>' not in texto:
+        if not re.search(r'<script type="module" src="/assets/js/analitica\.js\?v=[0-9a-f]{10}"></script>', texto):
             error(p, 'falta la analítica (assets/js/analitica.js)')
+
+        # 11. Cada CSS y JS enlazado lleva la huella AL DÍA de su contenido
+        # (?v=…). Sin ella, Cloudflare lo cachea un año y una pestaña vieja
+        # mezcla el HTML nuevo con el CSS viejo. Arreglo: tool/versionar.py.
+        for pagina_err in revisar_huellas(p, texto):
+            error(p, pagina_err)
 
         # 12. Un solo paquete de Play en todo el sitio
         for href in lec.play:

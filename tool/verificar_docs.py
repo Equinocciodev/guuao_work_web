@@ -126,10 +126,12 @@ def main():
         for img in re.findall(r'<img\b[^>]*>', texto):
             if not re.search(r'\balt="[^"]+"', img):
                 error(p, f'<img> sin alt: {img[:60]}')
-        if '<script type="module" src="/assets/js/analitica.js"></script>' not in texto:
+        if not re.search(r'<script type="module" src="/assets/js/analitica\.js\?v=[0-9a-f]{10}"></script>', texto):
             error(p, 'falta la analítica')
-        if '<link rel="stylesheet" href="/assets/css/docs.css">' not in texto:
+        if not re.search(r'<link rel="stylesheet" href="/assets/css/docs\.css\?v=[0-9a-f]{10}">', texto):
             error(p, 'falta docs.css')
+        for problema in V.revisar_huellas(p, texto):
+            error(p, problema)
         if re.search(r'#e95019', texto, re.I):
             error(p, 'aparece el naranja #E95019')
 

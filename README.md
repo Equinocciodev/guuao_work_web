@@ -199,6 +199,16 @@ falla si aparece. El logotipo `GUUAO® [WORK]` está en línea, sacado de
 Oscuro por defecto, como la app. El claro sigue al sistema o se elige con el
 botón; se guarda en `localStorage` (`guuao-work-tema`).
 
+### ⚠️ Después de tocar un CSS o un JS: `python3 tool/versionar.py`
+
+Cloudflare sirve `assets/` con **`max-age=31536000` (un año)**; el HTML, con 10
+minutos. Sin nada más, una pestaña abierta antes de publicar mezclaba el HTML
+nuevo con el CSS viejo y la página se veía rota (pasó el 23-sep-2026, con la
+portada nueva). Por eso cada CSS y JS se enlaza con la huella de su contenido,
+`estilo.css?v=e0bf27d5b2`: si el archivo cambia, cambia la URL. `versionar.py`
+la estampa en las diecisiete páginas, y los dos verificadores FALLAN si alguna
+enlaza una huella vieja o ninguna — olvidarlo no llega a producción.
+
 ## Verificar y ver en local
 
 ```bash
